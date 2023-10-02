@@ -1,0 +1,86 @@
+{
+    "apis": {
+        "activity_set_import_api": "http://localhost:8081/classifier/activity_set",
+        "activity_set_import_lm_api": "http://localhost:8081/classifier/mlm_by_activity_sets",
+        "activity_set_import_search_api": "http://localhost:8081/classifier/search",
+        "activity_set_import_filters_api": "http://localhost:8081/classifier/filters",
+        "activity_set_classification_api": "http://localhost:8081/classifier/classify",
+        "activity_set_group_matching_api": "http://localhost:8081/rasar/groups"
+    },
+    "view": {
+        "app": {
+            "display_24_hour_time": false,
+            "display_day_night_highlighting": true,
+            "appearance": {
+                "timeline": true
+            }
+        },
+        "graph": {
+            "render_high_quality": true,
+            "display_lateral_movements": false,
+            "display_cluster_info": true,
+            "display_analytic_nodes": true,
+            "active_clustering_features": ["host"]
+        },
+        "timeline": {
+            "breakout_feature": "attack_tactic",
+            "sort_feature": "time",
+            "stack_car_types": false
+        }
+    },
+    "time": {
+        "nudge_interval": "event",
+        "day_night_mode": "standard"
+    },
+    "keybindings": {
+        "import_export": {
+            "open_activity_set": "Control+O",
+            "add_activity_set": "",
+            "add_lateral_movement": "Control+L",
+            "import_activity_sets": "",
+            "import_activity_set_by_id": "",
+            "export_session": "Control+S"
+        },
+        "selection": {
+            "traceback": "Shift",
+            "multi_select": "Control",
+            "select_all": "Control+A",
+            "deselect_all": "Escape",
+            "freeze_node": "Shift+F",
+            "collapse_node": "Shift+S",
+            "zoom_to_selection": "Shift+Z",
+            "jump_to_parent": "Shift+P",
+            "jump_to_children": "Shift+C",
+            "jump_to_node": "Control+F"
+        },
+        "time_focus": {
+            "snap_to_day": "D",
+            "snap_to_night": "N",
+            "jump_to_prev_night": "B",
+            "jump_to_prev_day": "S",
+            "jump_to_next_day": "F",
+            "jump_to_next_night": "M",
+            "nudge_time_focus_forward": "ArrowUp",
+            "nudge_time_focus_backward": "ArrowDown",
+            "expand_time_focus_beg": "Alt+ArrowRight",
+            "expand_time_focus_end": "ArrowRight",
+            "contract_time_focus_beg": "Alt+ArrowLeft",
+            "contract_time_focus_end": "ArrowLeft"
+        },
+        "view": {
+            "display_lateral_movements": "Alt+L",
+            "display_cluster_info": "Alt+C",
+            "display_analytic_nodes": "Alt+A",
+            "display_24_hour_time": "Alt+T"
+        }
+    },
+    "file_classes": {
+        "text": ["bat", "doc", "docx", "ini", "json", "pages", "pdf", "rtf", "svg", "txt", "xml"],
+        "image": ["bmp", "exif", "gif", "jpeg", "jpg", "pbm", "pgm", "png", "pnm", "ppm", "tiff", "webp"],
+        "audio": ["aiff", "flac", "m4a", "mogg", "mp3", "oga", "ogg", "wav", "wma"],
+        "video": ["gifv", "avi", "flv", "m4p", "m4v", "mkv", "mov", "mp4", "mpeg", "mpg", "ogv", "qt", "webm", "wmv"],
+        "archive": ["7z", "apk", "cab", "car", "deb", "dmg", "gz", "lz", "pak", "rar", "s7z", "tar.bz2", "tar.gz", "tgz", "zip", "zipx"],
+        "executable": ["cmd", "com", "exe"],
+        "spreadsheet": ["numbers", "xl", "xls", "xlsm", "xlsx"]    
+    }
+}
