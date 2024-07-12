@@ -1,6 +1,6 @@
 import { Timeframe } from "../Collections/Timeframe";
-import { ActivitySetFile } from "./ActivitySetFileTypes";
-import { ActivitySetClassification } from "@/store/StoreTypes";
+import type { ActivitySetFile } from "./ActivitySetFileTypes";
+import type { ActivitySetClassification } from "@/store/StoreTypes";
 
 export class ActivitySetInfo {
     

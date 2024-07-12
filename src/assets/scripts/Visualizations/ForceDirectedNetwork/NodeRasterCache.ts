@@ -1,6 +1,6 @@
-import { GraphNode } from "./GraphNode";
+import { type GraphNode } from "./GraphNode";
 import { NodeRaster } from "./NodeRaster";
-import { FontDescriptor, FontLoader } from "../Fonts";
+import { type FontDescriptor, FontLoader } from "../Fonts";
 
 export class NodeRasterCache {
 

@@ -22,7 +22,7 @@
 
 <script lang="ts">
 // Dependencies
-import { defineComponent, Ref, ref } from 'vue';
+import { defineComponent, type Ref, ref } from 'vue';
 import { 
   formatDateCal,
   format12HourTime, 

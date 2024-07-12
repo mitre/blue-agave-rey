@@ -1,4 +1,4 @@
-import { ITimeframe } from "../Collections/Timeframe";
+import type { ITimeframe } from "../Collections/Timeframe";
 
 const Intervals = [
     1,          //   1 Millisecond

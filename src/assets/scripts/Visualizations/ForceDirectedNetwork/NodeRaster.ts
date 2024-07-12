@@ -1,5 +1,5 @@
 import { hexToHsv, hsvToHex } from "../Color";
-import { FontDescriptor, FontLoader } from "@/assets/scripts/Visualizations/Fonts"
+import { type FontDescriptor, FontLoader } from "@/assets/scripts/Visualizations/Fonts"
 import { ColorMap, OpacityMap, SizeMap, StrokeSizeMap } from "../VisualAttributeValues";
 import {
     ShapeMask, SizeMask,

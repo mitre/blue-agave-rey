@@ -18,12 +18,13 @@ import * as Store from "@/store/StoreTypes";
 import { MouseClick } from "@/assets/scripts/WebUtilities/WebTypes";
 import { GenericViewItem } from "@/assets/scripts/Visualizations/ViewBaseTypes/GenericViewItem";
 import { ActivitySetInfo } from "@/assets/scripts/ViewData/ActivitySetInfo";
+import { GlobalFontStore } from "@/assets/scripts/Fonts";
 import { NetworkReloadError } from "@/components/Exceptions/NetworkReloadError";
 import { ForceDirectedNetwork } from "@/assets/scripts/Visualizations/ForceDirectedNetwork/ForceDirectedNetwork";
-import { ActivitySetCommonNode } from "@/assets/scripts/ViewData/ViewNode";
-import { ActivitySetCommonEdge } from "@/assets/scripts/ViewData/ViewEdge";
 import { defineComponent, markRaw } from "vue";
 import { mapActions, mapGetters, mapState } from "vuex";
+import type { ActivitySetCommonNode } from "@/assets/scripts/ViewData/ViewNode";
+import type { ActivitySetCommonEdge } from "@/assets/scripts/ViewData/ViewEdge";
 // Components
 import ContextMenu from "@/components/Controls/ContextMenu.vue";
 
@@ -63,7 +64,18 @@ export default defineComponent({
     /**
      * Activity Sets Store data
      */
-    ...mapState("ActivitySetsStore", {
+    ...mapState<any, {
+      triggerDataLoaded: (state: Store.ActivitySetsStore) => number,
+      triggerDataFocused: (state: Store.ActivitySetsStore) => number,
+      triggerDataDisplay: (state: Store.ActivitySetsStore) => number,
+      triggerDataSelected: (state: Store.ActivitySetsStore) => number,
+      triggerNetworkLayout: (state: Store.ActivitySetsStore) => number,
+      triggerCamera: (state: Store.ActivitySetsStore) => number,
+      sets: (state: Store.ActivitySetsStore) => Map<string, ActivitySetInfo>,
+      nodes: (state: Store.ActivitySetsStore) => Map<string, ActivitySetCommonNode>,
+      edges: (state: Store.ActivitySetsStore) => Map<string, ActivitySetCommonEdge>,
+      selected: (state: Store.ActivitySetsStore) => Map<string, GenericViewItem>
+    }>("ActivitySetsStore", {
       triggerDataLoaded(state: Store.ActivitySetsStore): number {
         return state.triggerDataLoaded;
       },
@@ -99,7 +111,9 @@ export default defineComponent({
     /**
      * Activity Set Network Store data
      */
-    ...mapState("ActivitySetNetworkStore", {
+    ...mapState<any, {
+      justFrozen: (state: Store.ActivitySetNetworkStore) => Set<string>
+    }>("ActivitySetNetworkStore", {
       justFrozen(state: Store.ActivitySetNetworkStore): Set<string> {
         return state.frozen;
       },
@@ -108,7 +122,13 @@ export default defineComponent({
     /**
      * App Settings Store data
      */
-    ...mapState("AppSettingsStore", {
+    ...mapState<any, {
+      clusters: (state: Store.AppSettingsStore) => Array<string>,
+      renderHighQuality: (state: Store.AppSettingsStore) => boolean,
+      displayClusterInfo: (state: Store.AppSettingsStore) => boolean,
+      multiSelectHotkey: (state: Store.AppSettingsStore) => { hotkey: string, strict: boolean, },
+      tracebackHotKey: (state: Store.AppSettingsStore) => { hotkey: string, strict: boolean, }
+    }>("AppSettingsStore", {
       clusters(state: Store.AppSettingsStore): Array<string> {
         return state.settings.view.graph.active_clustering_features;
       },
@@ -396,6 +416,14 @@ export default defineComponent({
     },
   },
   async mounted() {
+
+    // Load fonts
+    await GlobalFontStore.loadFonts([
+      { family: "Barlow", size: "9px" },
+      { family: "Roboto Mono", size: "26px", weight: 500 },
+      { family: "Roboto Mono", size: "30px", weight: 600 },
+      { family: "Roboto Mono", size: "42px", weight: 600 }
+    ], 1000)
 
     // Style graph
     let RobotoMonoClass = { 

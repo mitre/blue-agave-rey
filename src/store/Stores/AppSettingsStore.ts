@@ -1,12 +1,12 @@
-import Features from "@/assets/rey.features.js";
-import { Module } from "vuex"
+import Features from "@/assets/rey.features";
 import { Timeframe } from "@/assets/scripts/Collections/Timeframe";
-import { ActivitySetEvent } from "@/assets/scripts/ViewData/ActivitySetFileTypes";
 import { InvalidTimelineSortError } from "../Exceptions/InvalidTimelineSortError";
 import { InvalidDayNightModeError } from "../Exceptions/InvalidDayNightModeError";
 import { InvalidNudgeIntervalError } from "../Exceptions/InvalidNudgeIntervalError";
 import { InvalidTimelineBreakoutError } from "../Exceptions/InvalidTimelineBreakoutError";
-import { 
+import type { Module } from "vuex";
+import type { ActivitySetEvent } from "@/assets/scripts/ViewData/ActivitySetFileTypes";
+import type { 
     SortFeature,
     ModuleStore, 
     AppSettings,

@@ -1,10 +1,10 @@
 import Features from "@/assets/rey.features";
-import { Module } from "vuex"
 import { Download } from "@/assets/scripts/WebUtilities/Download";
 import { ActivitySetPlainEdge } from "@/assets/scripts/ViewData/ViewEdge";
-import { ActivitySetFile, LateralMovementFile } from "@/assets/scripts/ViewData/ActivitySetFileTypes";
 import { ActivitySetAnalyticNode, ActivitySetEventNode } from "@/assets/scripts/ViewData/ViewNode";
-import { ModuleStore, ActivitySetImporter, ActivitySetClassification } from "@/store/StoreTypes"
+import type { Module } from "vuex";
+import type { ActivitySetFile, LateralMovementFile } from "@/assets/scripts/ViewData/ActivitySetFileTypes";
+import type { ModuleStore, ActivitySetImporter, ActivitySetClassification } from "@/store/StoreTypes"
 
 const FetchSet         = "ActivitySetApi/fetchActivitySet";
 const FetchLms         = "ActivitySetApi/fetchLateralMovements";

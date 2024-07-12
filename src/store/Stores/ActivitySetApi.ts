@@ -1,11 +1,11 @@
 import axios from "axios";
-import { Module } from "vuex"
 import { ActivitySetApiError } from "../Exceptions/ActivitySetApiError";
-import { 
+import type { Module } from "vuex";
+import type { 
     ActivitySetFile,
     LateralMovementFile
 } from "@/assets/scripts/ViewData/ActivitySetFileTypes";
-import {
+import type {
     ModuleStore,
     ActivitySetApi,
     SetImportFilters,

@@ -1,8 +1,8 @@
 // Dependencies
-import { Module } from "vuex"
 import { markRaw } from "@vue/reactivity";
 import { DetailedError } from "@/assets/scripts/DetailedError";
-import { ModuleStore, WindowManagerStore } from "@/store/StoreTypes";
+import type { Module } from "vuex";
+import type { ModuleStore, WindowManagerStore } from "@/store/StoreTypes";
 // Components
 import AboutWindow from "@/components/Windows/AboutWindow.vue";
 import ExceptionWindow from "@/components/Windows/ExceptionWindow.vue";

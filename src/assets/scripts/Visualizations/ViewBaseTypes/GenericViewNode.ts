@@ -1,7 +1,7 @@
-import { Primitive } from "@/assets/scripts/HelperTypes";
 import { computeHash } from "@/assets/scripts/String";
 import { GenericViewEdge } from "./GenericViewEdge";
 import { GenericViewItem } from "./GenericViewItem";
+import type { Primitive } from "@/assets/scripts/HelperTypes";
 
 export type FeatureSet = { [key: string]: Primitive }
 

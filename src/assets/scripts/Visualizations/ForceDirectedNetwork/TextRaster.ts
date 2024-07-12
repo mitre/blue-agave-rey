@@ -1,4 +1,4 @@
-import { FontDescriptor, FontLoader } from "../Fonts";
+import { type FontDescriptor, FontLoader } from "../Fonts";
 
 export class TextRaster {
 

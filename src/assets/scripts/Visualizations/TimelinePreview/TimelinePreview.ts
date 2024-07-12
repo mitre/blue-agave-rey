@@ -4,8 +4,8 @@ import { ColorMap } from "../VisualAttributeValues";
 import { FillColorMask } from "../VisualAttributes";
 import { createHatchPattern } from "../Patterns";
 import { GenericTimelineLane } from "../ViewBaseTypes/GenericTimelineLane";
-import { ITimeframe, Timeframe } from "../../Collections/Timeframe";
-import { FontDescriptor, FontLoader } from "../Fonts";
+import { type ITimeframe, Timeframe } from "../../Collections/Timeframe";
+import { type FontDescriptor, FontLoader } from "../Fonts";
 import { resizeContext, styleContext } from "../Canvas";
 import {
     Time,
@@ -17,7 +17,7 @@ import {
     calculateTimeAtPixel,
     timeDurationFromWidth,
     fitTimeframeInInterval,
-    FittedIntervalParameters
+    type FittedIntervalParameters
 } from "@/assets/scripts/Visualizations/Time";
 
 export class TimelinePreview {

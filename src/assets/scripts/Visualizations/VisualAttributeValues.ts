@@ -1,5 +1,4 @@
 import { Colors } from "./Colors"
-import { GraphNode } from "./ForceDirectedNetwork/GraphNode"
 import {
     Size, 
     Dimmed,
@@ -9,6 +8,7 @@ import {
     Stroke1Width,
     Stroke2Width 
 } from "./VisualAttributes"
+import type { GraphNode } from "./ForceDirectedNetwork/GraphNode"
 
 // TODO: Algorithmically populate maps and remove '>>> 4' (e.g. when converting
 //       Stroke2Color to Stroke1Color for ColorMap) in reliant files.

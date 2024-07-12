@@ -1,4 +1,4 @@
-import { ActivitySetClassification } from "@/store/StoreTypes"
+import type { ActivitySetClassification } from "@/store/StoreTypes"
 
 /**
  * Activity Set File definition.

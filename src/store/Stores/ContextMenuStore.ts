@@ -1,8 +1,8 @@
-import Features from "@/assets/rey.features.js";
-import { Module } from "vuex"
+import Features from "@/assets/rey.features";
 import { titleCase } from "@/assets/scripts/String"
-import { ActivitySetEvent } from "@/assets/scripts/ViewData/ActivitySetFileTypes";
-import { 
+import type { Module } from "vuex";
+import type { ActivitySetEvent } from "@/assets/scripts/ViewData/ActivitySetFileTypes";
+import type { 
     ModuleStore,
     ContextMenuItem,
     ContextMenuStore,

@@ -1,5 +1,5 @@
-import { Module, Store } from "vuex"
-import { ModuleStore, ActivitySetNetworkStore } from "@/store/StoreTypes"
+import type { Module, Store } from "vuex"
+import type { ModuleStore, ActivitySetNetworkStore } from "@/store/StoreTypes";
 
 export default {
     namespaced: true,

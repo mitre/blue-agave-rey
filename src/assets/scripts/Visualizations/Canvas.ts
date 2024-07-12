@@ -1,4 +1,4 @@
-import { Primitive } from "../HelperTypes";
+import type { Primitive } from "../HelperTypes";
 
 /**
  * Resizes a canvas context according to the current screen's pixel ratio.

@@ -1,6 +1,6 @@
 import { TextRaster } from "./TextRaster";
 import { GraphCluster } from "./GraphCluster";
-import { FontDescriptor, FontLoader } from "../Fonts";
+import { type FontDescriptor, FontLoader } from "../Fonts";
 
 export class ClusterRasterCache {
 

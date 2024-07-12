@@ -1,9 +1,9 @@
-import { Module, Store } from "vuex";
+import Features from "@/assets/rey.features";
 import { Focus, Visibility } from "@/assets/scripts/Visualizations/ViewBaseTypes/GeneralAttributes";
-import { activity_set_timeline } from "@/assets/rey.features";
 import { ActivitySetTimelineLane } from "@/assets/scripts/ViewData/ViewTimelineLane";
-import { ActivitySetTimelineStore, ModuleStore } from "../StoreTypes";
-import { ActivitySetCommonNode, ActivitySetEventNode } from "@/assets/scripts/ViewData/ViewNode";
+import type { Module, Store } from "vuex";
+import type { ActivitySetTimelineStore, ModuleStore } from "../StoreTypes";
+import type { ActivitySetCommonNode, ActivitySetEventNode } from "@/assets/scripts/ViewData/ViewNode";
 
 export default {
     namespaced: true,
@@ -50,7 +50,7 @@ export default {
             let AppStore = rootState.AppSettingsStore;
             let { key, on } = AppStore.active_timeline_breakout;
             let { stack_car_types } = AppStore.settings.view.timeline;
-            let { no_analytic_lane_name: nal } = activity_set_timeline;
+            let { no_analytic_lane_name: nal } = Features.activity_set_timeline;
 
             // Derive lanes
             type Tracks = { 

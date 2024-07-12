@@ -92,7 +92,7 @@
 import Features from "@/assets/rey.features"
 // Dependencies
 import { ActivitySetInfo } from "@/assets/scripts/ViewData/ActivitySetInfo";
-import { defineComponent, PropType } from "vue";
+import { defineComponent, type PropType } from "vue";
 import { 
   formatDateCal,
   formatDuration,

@@ -1,5 +1,5 @@
-import { IChronologicalEvent } from "../../Collections/IChronologicalEvent";
 import { SelectMask, IsCollapsed, IsCollapsedMask, VisibilityMask, Select } from "./GeneralAttributes";
+import type { IChronologicalEvent } from "../../Collections/IChronologicalEvent";
 
 export abstract class GenericViewItem implements IChronologicalEvent {
 

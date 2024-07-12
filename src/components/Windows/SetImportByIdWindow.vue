@@ -29,7 +29,7 @@
 <script lang="ts">
 // Dependencies
 import { mapActions } from "vuex";
-import { defineComponent, ref, Ref } from "vue";
+import { defineComponent, ref, type Ref } from "vue";
 // Components
 import Window from "@/components/Containers/Window.vue";
 

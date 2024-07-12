@@ -57,7 +57,7 @@ import { ColorMap } from '@/assets/scripts/Visualizations/VisualAttributeValues'
 import { titleCase } from "@/assets/scripts/String";
 import { GenericViewItem } from '@/assets/scripts/Visualizations/ViewBaseTypes/GenericViewItem';
 import { mapActions, mapState } from 'vuex';
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, type PropType } from 'vue';
 import { formatDateCal, formatTime } from '@/assets/scripts/Visualizations/Time';
 import { 
   FillColorMask,
@@ -65,7 +65,7 @@ import {
 } from '@/assets/scripts/Visualizations/VisualAttributes';
 import { 
   ActivitySetEventNode, 
-  ActivitySetCommonNode,
+  type ActivitySetCommonNode,
   ActivitySetAnalyticNode 
 } from '@/assets/scripts/ViewData/ViewNode';
 
@@ -123,7 +123,9 @@ export default defineComponent({
     /**
      * Activity Sets Store data
      */
-    ...mapState("ActivitySetsStore", {
+    ...mapState<any, {
+      selected: (state: Store.ActivitySetsStore) => Map<string, GenericViewItem>
+    }>("ActivitySetsStore", {
       selected(state: Store.ActivitySetsStore): Map<string, GenericViewItem> {
         return state.selected;
       }
@@ -132,7 +134,11 @@ export default defineComponent({
     /**
      * App Settings Store data
      */
-    ...mapState("AppSettingsStore", {
+    ...mapState<any, {
+      display24HourTime: (state: Store.AppSettingsStore) => boolean,
+      multiSelectHotkey: (state: Store.AppSettingsStore) => { hotkey: string, strict: boolean },
+      tracebackHotKey: (state: Store.AppSettingsStore) => { hotkey: string, strict: boolean }
+    }>("AppSettingsStore", {
       display24HourTime(state: Store.AppSettingsStore): boolean {
         return state.settings.view.app.display_24_hour_time;
       },

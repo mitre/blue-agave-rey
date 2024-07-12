@@ -45,7 +45,7 @@
       <EventTooltip
         class="timeline-tooltip"
         v-show="tooltip.show"
-        :items="tooltip.items"
+        :items="tooltip.items as ActivitySetCommonNode[]"
         :objectRegion="tooltip.region"
       />
       <ContextMenu
@@ -67,12 +67,13 @@ import * as Store from "@/store/StoreTypes";
 import { Timeline } from "@/assets/scripts/Visualizations/Timeline/Timeline";
 import { Timeframe } from "@/assets/scripts/Collections/Timeframe";
 import { MouseClick } from "@/assets/scripts/WebUtilities/WebTypes";
+import { GlobalFontStore } from "@/assets/scripts/Fonts";
 import { GenericViewItem } from "@/assets/scripts/Visualizations/ViewBaseTypes/GenericViewItem";
 import { TimelineReloadError } from "@/components/Exceptions/TimelineReloadError";
-import { ActivitySetCommonNode } from "@/assets/scripts/ViewData/ViewNode";
 import { ActivitySetTimelineLane } from "@/assets/scripts/ViewData/ViewTimelineLane";
 import { mapActions, mapGetters, mapState } from "vuex";
-import { defineComponent, markRaw, Ref, ref, toRaw } from "vue";
+import { defineComponent, markRaw, type Ref, ref, toRaw } from "vue";
+import type { ActivitySetCommonNode } from "@/assets/scripts/ViewData/ViewNode";
 const { breakout_features } = Features.activity_set_timeline;
 // Components
 import ContextMenu from "@/components/Controls/ContextMenu.vue";
@@ -126,7 +127,14 @@ export default defineComponent({
     /**
      * Activity Sets Store data
      */
-    ...mapState("ActivitySetsStore", {
+    ...mapState<any, {
+      triggerDataLoaded: (state: Store.ActivitySetsStore) => number,
+      triggerDataFocused: (state: Store.ActivitySetsStore) => number,
+      triggerDataSelected: (state: Store.ActivitySetsStore) => number,
+      timeframe: (state: Store.ActivitySetsStore) => Timeframe,
+      focus: (state: Store.ActivitySetsStore) => Timeframe,
+      selected: (state: Store.ActivitySetsStore) => Map<string, GenericViewItem>
+    }>("ActivitySetsStore", {
       triggerDataLoaded(state: Store.ActivitySetsStore): number {
         return state.triggerDataLoaded;
       },
@@ -150,7 +158,10 @@ export default defineComponent({
     /**
      * Activity Set Timeline Store data
      */
-    ...mapState("ActivitySetTimelineStore", {
+    ...mapState<any, {
+      triggerTimelineLayout: (state: Store.ActivitySetTimelineStore) => number,
+      lanes: (state: Store.ActivitySetTimelineStore) => ActivitySetTimelineLane[]
+    }>("ActivitySetTimelineStore", {
       triggerTimelineLayout(state: Store.ActivitySetTimelineStore): number {
         return state.triggerTimelineLayout;
       },
@@ -162,7 +173,16 @@ export default defineComponent({
     /**
      * App Settings Store data
      */
-    ...mapState("AppSettingsStore", {
+    ...mapState<any, {
+      display24HourTime: (state: Store.AppSettingsStore) => boolean,
+      breakoutFeature: (state: Store.AppSettingsStore) => string,
+      sortFeature: (state: Store.AppSettingsStore) => string,
+      displayDayNightHighlighting: (state: Store.AppSettingsStore) => boolean,
+      dayNightModeTimeframe: (state: Store.AppSettingsStore) => Timeframe,
+      stackCarTypes: (state: Store.AppSettingsStore) => boolean,
+      multiSelectHotkey: (state: Store.AppSettingsStore) => { hotkey: string, strict: boolean },
+      tracebackHotKey: (state: Store.AppSettingsStore) => { hotkey: string, strict: boolean }
+    }>("AppSettingsStore", {
       display24HourTime(state: Store.AppSettingsStore): boolean {
         return state.settings.view.app.display_24_hour_time;
       },
@@ -536,6 +556,12 @@ export default defineComponent({
   },
   async mounted() {
     try {
+
+      // Load fonts
+      await GlobalFontStore.loadFonts([
+        { family: "Inter", size: "9pt" },
+        { family: "Roboto Mono", size: "9pt" }
+      ], 1000)
 
       // Style timeline
       await this.timeline.setTimelineStyle({

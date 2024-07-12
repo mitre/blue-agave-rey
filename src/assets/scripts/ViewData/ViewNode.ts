@@ -1,6 +1,4 @@
-import { ActivitySetCommonEdge } from "./ViewEdge"
-import { GenericViewNode, FeatureSet } from "../Visualizations/ViewBaseTypes/GenericViewNode";
-import { ActivitySetEvent, ActivitySetAnalytic } from "./ActivitySetFileTypes";
+import { GenericViewNode, type FeatureSet } from "../Visualizations/ViewBaseTypes/GenericViewNode";
 import { 
     CarTypeMask,
     ObjectType, ObjectTypeMask, ObjectTypeString,
@@ -22,6 +20,8 @@ import {
     Stroke1Width, Stroke1WidthMask,
     Stroke1Color, Stroke1ColorMask
 } from "../Visualizations/VisualAttributes";
+import type { ActivitySetCommonEdge } from "./ViewEdge"
+import type { ActivitySetEvent, ActivitySetAnalytic } from "./ActivitySetFileTypes";
 
 
 ///////////////////////////////////////////////////////////////////////////////

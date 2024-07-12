@@ -1,4 +1,4 @@
-import { IChronologicalEvent } from "./IChronologicalEvent";
+import type { IChronologicalEvent } from "./IChronologicalEvent";
 
 export class ChronologicalIndex<T extends IChronologicalEvent> {
     

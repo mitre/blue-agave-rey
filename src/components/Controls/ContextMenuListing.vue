@@ -2,7 +2,7 @@
   <div class="context-menu-listing-control" :style="offset" @contextmenu.prevent="">
     <input type="file" ref="file" style="display:none" @change="readFile">
     <!-- Menu Sections -->
-    <div class="section" v-for="(section, i) of sections" :key="section.name">
+    <div class="section" v-for="(section, i) of sections" :key="section.id">
       <!-- Menu Section -->
       <template v-for="item of section.items" :key="item.id">
         <!-- Submenu Item -->
@@ -17,15 +17,17 @@
             <span class="more-arrow"></span>
           </a>
           <div class="submenu" v-if="item.id === focusedSubMenu">
-            <ContextMenuListing :sections="item.sections" @select="select"/>
+            <ContextMenuListing :sections="item.sections" :select="_select"/>
           </div>
         </li>
         <!-- Regular Item -->
         <li v-else :class="{ disabled: item.disabled }" @click="onItemClick(item)">
-          <a class="item" :href="item.disabled ? null : item.link" target="_blank">
-            <span class="check" v-show="item.value">✓</span>
+          <a class="item" :href="item.disabled ? null : (item as any).link" target="_blank">
+            <template v-if="item.type === 'toggle'">
+              <span class="check" v-show="item.value">✓</span>
+            </template>
             <span class="text">{{ item.text }}</span>
-            <span v-if="item.shortcut" class="shortcut">
+            <span v-if="'shortcut' in item" class="shortcut">
                 {{ formatShortcut(item.shortcut) }}
             </span>
           </a>
@@ -39,7 +41,7 @@
 
 <script lang="ts">
 import * as Store from '@/store/StoreTypes';
-import { defineComponent, PropType, Ref, ref } from 'vue';
+import { defineComponent, type PropType, type Ref, ref } from 'vue';
 
 const KeyToText: { [key: string]: string } = {
   Control    : "Ctrl",
@@ -59,6 +61,10 @@ export default defineComponent({
     }
   },
   props: {
+    select: {
+      type: Function as PropType<(id: string, closeSubmenu: boolean, data?: any) => void>,
+      required: true
+    },
     sections: {
       type: Array as PropType<Store.ContextMenuSection[]>,
       required: true
@@ -93,7 +99,6 @@ export default defineComponent({
     }
 
   },
-  emits: ["select"],
   methods: {
     
     /**
@@ -129,13 +134,13 @@ export default defineComponent({
         case "file":
           this.file!.click();
           this.selectedFileId = item.id;
-          this.select(`__preload_${ item.id }`, true, item.data);
+          this._select(`__preload_${ item.id }`, true, item.data);
           break;
         case "toggle":
-          this.select(item.id, false, { ...item.data, value: item.value });
+          this._select(item.id, false, { ...item.data, value: item.value });
           break;
         default:
-          this.select(item.id, true, item.data);
+          this._select(item.id, true, item.data);
           break;
       }
     },
@@ -150,7 +155,7 @@ export default defineComponent({
       let file = (event.target as any).files[0];
       let reader = new FileReader();
       reader.onload = (e: ProgressEvent<FileReader>) => {
-        this.select(this.selectedFileId!, true, {
+        this._select(this.selectedFileId!, true, {
           filename: file.name,
           file: e.target?.result
         })
@@ -171,8 +176,8 @@ export default defineComponent({
      * @param data
      *  Any auxillary data associated with the selection.
      */
-    select(id: string, closeSubmenu: boolean, data?: any) {
-      this.$emit("select", id, closeSubmenu, data);
+    _select(id: string, closeSubmenu: boolean, data?: any) {
+      this.select(id, closeSubmenu, data);
       if(closeSubmenu) this.focusedSubMenu = null;
     },
 

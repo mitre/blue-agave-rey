@@ -14,8 +14,8 @@
 
 <script lang="ts">
 // Dependencies
-import { ActivitySetArchive } from "@/assets/scripts/ViewData/ActivitySetFileTypes";
-import { defineComponent, PropType } from "vue";
+import { defineComponent, type PropType } from "vue";
+import type { ActivitySetArchive } from "@/assets/scripts/ViewData/ActivitySetFileTypes";
 // Components
 import FileListing from "./FileListing.vue";
 import FileInjectionListing from "./FileInjectionListing.vue"

@@ -1,8 +1,8 @@
-import Features from "@/assets/rey.features.js";
-import { Module } from "vuex"
+import Features from "@/assets/rey.features";
 import { HotkeyObserver } from "@/assets/scripts/WebUtilities/HotkeyObserver";
 import { SettingsConfigurationError } from "../Exceptions/SettingsConfigurationError";
-import { HotkeyStore, HotkeyItem, ModuleStore } from "../StoreTypes";
+import type { Module } from "vuex"
+import type { HotkeyStore, HotkeyItem, ModuleStore } from "../StoreTypes";
 
 // TODO: Reintroduce hotkey container. Distribute `isHotkeyActive()` to
 //       children via `provide()` and `inject()`.

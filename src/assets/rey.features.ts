@@ -1,4 +1,6 @@
-module.exports = {
+import ProductAttribution from "@/components/Panels/ProductAttribution.vue";
+
+const config = {
     links: {
         documentation_url: "https://gitlab.mitre.org/BB-ATE/rey",
         changelog_url: "https://gitlab.mitre.org/BB-ATE/rey/-/blob/master/CHANGELOG.md"
@@ -104,6 +106,8 @@ module.exports = {
         activity_set_id_length: 8
     },
     application: {
-        product_attribution: require("@/components/Panels/ProductAttribution.vue").default
+        product_attribution: ProductAttribution,
     }
 }
+
+export default config;

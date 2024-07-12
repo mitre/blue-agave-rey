@@ -1,16 +1,14 @@
 import { clamp } from "../../Math";
 import { Device } from "../../WebUtilities/Device";
 import { ColorMap } from "../VisualAttributeValues";
-import { TimelineLane } from "./TimelineLane";
-import { TimelineTick } from "./TimelineTick";
 import { EventEmitter } from "../EventEmitter";
 import { GenericViewNode } from "../ViewBaseTypes/GenericViewNode";
 import { createHatchPattern } from "../Patterns";
 import { ChronologicalIndex } from "../../Collections/ChronologicalIndex";
 import { GenericTimelineLane } from "../ViewBaseTypes/GenericTimelineLane";
-import { ITimeframe, Timeframe } from "../../Collections/Timeframe";
+import { type ITimeframe, Timeframe } from "../../Collections/Timeframe";
 import { resizeContext, styleContext } from "../Canvas";
-import { FontDescriptor, FontLoader } from "../Fonts";
+import { type FontDescriptor, FontLoader } from "../Fonts";
 import { FillColorMask, Stroke2ColorMask } from "../VisualAttributes";
 import { findLayerSegments, getSimpleVisualPriority as gsvp } from "../Layers";
 import { 
@@ -24,6 +22,8 @@ import {
     timeDurationFromWidth,
     fitIntervalInTimeframe
 } from "../Time";
+import type { TimelineLane } from "./TimelineLane";
+import type { TimelineTick } from "./TimelineTick";
 
 export class Timeline extends EventEmitter<TimelineEvents> {
 

@@ -26,6 +26,7 @@
 import * as Store from "@/store/StoreTypes";
 import { Timeframe } from "@/assets/scripts/Collections/Timeframe";
 import { MouseTracker } from "@/assets/scripts/WebUtilities/MouseTracker";
+import { GlobalFontStore } from "@/assets/scripts/Fonts";
 import { TimelinePreview } from "@/assets/scripts/Visualizations/TimelinePreview/TimelinePreview";
 import { mapActions, mapState } from "vuex";
 import { ActivitySetTimelineLane } from "@/assets/scripts/ViewData/ViewTimelineLane";
@@ -61,7 +62,12 @@ export default defineComponent({
     /**
      * Activity Sets Store data
      */
-    ...mapState("ActivitySetsStore", {
+    ...mapState<any, {
+      triggerDataLoaded: (state: Store.ActivitySetsStore) => number,
+      triggerDataFocused: (state: Store.ActivitySetsStore) => number,
+      timeframe: (state: Store.ActivitySetsStore) => Timeframe,
+      focus: (state: Store.ActivitySetsStore) => Timeframe
+    }>("ActivitySetsStore", {
       triggerDataLoaded(state: Store.ActivitySetsStore): number {
         return state.triggerDataLoaded;
       },
@@ -79,7 +85,10 @@ export default defineComponent({
     /**
      * Activity Set Timeline Store data
      */
-    ...mapState("ActivitySetTimelineStore", {
+    ...mapState<any, {
+      triggerTimelineLayout: (state: Store.ActivitySetTimelineStore) => number,
+      lanes: (state: Store.ActivitySetTimelineStore) => ActivitySetTimelineLane[]
+    }>("ActivitySetTimelineStore", {
       triggerTimelineLayout(state: Store.ActivitySetTimelineStore): number {
         return state.triggerTimelineLayout;
       },
@@ -91,7 +100,9 @@ export default defineComponent({
     /**
      * App Settings Store data
      */
-    ...mapState("AppSettingsStore", {
+    ...mapState<any, {
+      display24HourTime: (state: Store.AppSettingsStore) => boolean
+    }>("AppSettingsStore", {
       display24HourTime(state: Store.AppSettingsStore): boolean {
         return state.settings.view.app.display_24_hour_time;
       },
@@ -204,6 +215,11 @@ export default defineComponent({
   },
   async mounted() {
     
+    // Load fonts
+    await GlobalFontStore.loadFonts([
+      { family: "Roboto Mono", size: "8.25pt" }
+    ], 1000)
+
     // Style timeline preview
     await this.preview.setPreviewStyle({
       backgroundColor: "#2b2b2b",

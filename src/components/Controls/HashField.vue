@@ -1,7 +1,7 @@
 <template>
   <div
     :class="['hash-field-control', { enabled: hash.length }]"
-    @mouseover="hovered = hash.length"
+    @mouseover="hovered = hash.length !== 0"
     @mouseout="hovered = false"
     @click="copyToClipboard"
   >

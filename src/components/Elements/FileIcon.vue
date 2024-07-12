@@ -34,7 +34,9 @@ export default defineComponent({
     /**
      * App Settings Store data
      */
-    ...mapState("AppSettingsStore", {
+    ...mapState<any, {
+      fileClasses: (state: Store.AppSettingsStore) => Store.FileTypeClasses
+    }>("AppSettingsStore", {
       fileClasses(state: Store.AppSettingsStore): Store.FileTypeClasses {
         return state.settings.file_classes;
       },

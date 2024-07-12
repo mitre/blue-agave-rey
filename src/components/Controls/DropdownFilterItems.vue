@@ -7,7 +7,7 @@
     <ScrollBox class="scrollbox">
       <div class="filters">
         <li 
-          v-for="filter of filters" :key="filter.id"
+          v-for="filter of filters" :key="filter.id.toString()"
           @click="select(filter)"
         >
           <p class="check" v-show="!inViewAllState && filter.value">✓</p>
@@ -21,8 +21,8 @@
 
 <script lang="ts">
 // Dependencies
-import { defineComponent, PropType } from 'vue';
-import { Primitive } from '@/assets/scripts/HelperTypes';
+import { defineComponent, type PropType } from 'vue';
+import type { Primitive } from '@/assets/scripts/HelperTypes';
 // Components
 import ScrollBox from "@/components/Containers/ScrollBox.vue";
 

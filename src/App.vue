@@ -97,7 +97,9 @@ export default defineComponent({
     /**
      * Activity Sets Store data
      */
-    ...mapState("ActivitySetsStore", {
+    ...mapState<any, { 
+      hasSelection: (state: Store.ActivitySetsStore) => boolean
+    }>("ActivitySetsStore", {
       hasSelection(state: Store.ActivitySetsStore): boolean {
         return 0 < state.selected.size;
       }
@@ -106,7 +108,9 @@ export default defineComponent({
     /**
      * App Settings Store data
      */
-    ...mapState("AppSettingsStore", {
+    ...mapState<any, {
+      showBottomFrame: (state: Store.AppSettingsStore) => boolean
+    }>("AppSettingsStore", {
       showBottomFrame(state: Store.AppSettingsStore): boolean {
         return state.settings.view.app.appearance.timeline;
       }

@@ -91,9 +91,9 @@ import * as Store from "@/store/StoreTypes";
 import { ActivitySetInfo } from "@/assets/scripts/ViewData/ActivitySetInfo";
 import { RequestDebouncer } from "@/assets/scripts/WebUtilities/RequestDebouncer";
 import { mapActions, mapState } from "vuex";
-import { MatchedMitreAttackGroups } from "@/store/StoreTypes";
-import { defineComponent, markRaw, PropType } from "vue";
+import { defineComponent, markRaw, type PropType } from "vue";
 import { format12HourTime, format24HourTime, formatDateCal } from "@/assets/scripts/Visualizations/Time";
+import type { MatchedMitreAttackGroups } from "@/store/StoreTypes";
 // Components
 import Key from "../Icons/Key.vue";
 import User from "../Icons/User.vue"
@@ -130,7 +130,9 @@ export default defineComponent({
     /**
      * App Settings Store data
      */
-    ...mapState("AppSettingsStore", {
+    ...mapState<any, {
+      display24HourTime: (state: Store.AppSettingsStore) => boolean
+    }>("AppSettingsStore", {
       display24HourTime(state: Store.AppSettingsStore): boolean {
         return state.settings.view.app.display_24_hour_time;
       }

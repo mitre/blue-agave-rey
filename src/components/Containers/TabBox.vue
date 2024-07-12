@@ -25,7 +25,7 @@ export default defineComponent({
 
     // Create reactive state properties
     let active = computed(() => props.modelValue);
-    let tabs = ref([]);
+    let tabs = ref([] as { props: { name: string }}[]);
 
     // Provide them to descendants
     provide("tabsState", { active, tabs });

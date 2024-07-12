@@ -1,4 +1,4 @@
-import { HotkeyAction, HotkeyItem } from "@/store/StoreTypes";
+import type { HotkeyAction, HotkeyItem } from "@/store/StoreTypes";
 
 export class HotkeyObserver {
 

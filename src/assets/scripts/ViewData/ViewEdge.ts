@@ -1,6 +1,4 @@
 import { GenericViewEdge } from "../Visualizations/ViewBaseTypes/GenericViewEdge";
-import { ActivitySetEdge } from "./ActivitySetFileTypes";
-import { ActivitySetCommonNode } from "./ViewNode";
 import { 
     Focus, FocusMask, 
     Select, SelectMask 
@@ -14,6 +12,8 @@ import {
     FillColor, FillColorMask, 
     Stroke1Color, Stroke1ColorMask
 } from "../Visualizations/VisualAttributes";
+import type { ActivitySetEdge } from "./ActivitySetFileTypes";
+import type { ActivitySetCommonNode } from "./ViewNode";
 
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -9,7 +9,7 @@ import {
   watchEffect,
   defineComponent, 
   getCurrentInstance, 
-  ComponentInternalInstance
+  type ComponentInternalInstance
 } from "vue";
 
 export default defineComponent({

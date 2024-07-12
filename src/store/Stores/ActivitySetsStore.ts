@@ -1,14 +1,12 @@
 import Features from "@/assets/rey.features";
 import { clamp } from "@/assets/scripts/Math";
 import { markRaw } from "vue";
-import { Module, Store } from "vuex"
 import { ActivitySetInfo } from "@/assets/scripts/ViewData/ActivitySetInfo";
 import { GenericViewItem } from "@/assets/scripts/Visualizations/ViewBaseTypes/GenericViewItem"
 import { ChronologicalIndex } from "@/assets/scripts/Collections/ChronologicalIndex"
-import { ITimeframe, Timeframe } from "@/assets/scripts/Collections/Timeframe"
+import { type ITimeframe, Timeframe } from "@/assets/scripts/Collections/Timeframe"
 import { MalformedActivitySetError } from "../Exceptions/MalformedActivitySetError";
 import { MalformedLateralMovementError } from "../Exceptions/MalformedLateralMovementError";
-import { ModuleStore, ActivitySetsStore } from "@/store/StoreTypes"
 import { 
     Focus, 
     Select,  
@@ -22,21 +20,23 @@ import {
 } from "@/assets/scripts/ViewData/ExtendedAttributes"
 import {
     ActivitySetPlainEdge,
-    ActivitySetCommonEdge,
+    type ActivitySetCommonEdge,
     ActivitySetAnalyticEdge
 } from "@/assets/scripts/ViewData/ViewEdge"
 import { 
     ActivitySetEventNode,
-    ActivitySetCommonNode,
+    type ActivitySetCommonNode,
     ActivitySetAnalyticNode, 
-} from "@/assets/scripts/ViewData/ViewNode"
-import { 
+} from "@/assets/scripts/ViewData/ViewNode";
+import type { Module, Store } from "vuex";
+import type { ModuleStore, ActivitySetsStore } from "@/store/StoreTypes"
+import type { 
     ActivitySetFile, 
     ActivitySetEdge, 
     ActivitySetEvent,
     ActivitySetApiData, 
     LateralMovementFile,
-} from "@/assets/scripts/ViewData/ActivitySetFileTypes"
+} from "@/assets/scripts/ViewData/ActivitySetFileTypes";
 
 const { activity_set_graph: GraphFeatures } = Features;
 

@@ -4,7 +4,7 @@
       <slot name="icon"></slot>
     </li>
     <li 
-      v-for="menu of menus" :key="menu.id"
+      v-for="menu of submenus" :key="menu.id"
       :class="{ focused: menu.id === focusedMenu }"
       @mouseenter="menuEnter(menu.id)"
       @click="menuOpen(menu.id)"
@@ -14,7 +14,7 @@
         class="menu-listing"
         v-if="menu.id === focusedMenu"
         :sections="menu.sections"
-        @select="menuSelect"
+        :select="menuSelect"
         @click.stop
       />
     </li>
@@ -24,7 +24,7 @@
 <script lang="ts">
 import * as Store from '@/store/StoreTypes';
 // Dependencies
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, type PropType } from 'vue';
 // Components
 import FocusBox from "@/components/Containers/FocusBox.vue";
 import ContextMenuListing from "./ContextMenuListing.vue";
@@ -41,6 +41,20 @@ export default defineComponent({
     return {
       focusedMenu: null as string | null
     }
+  },
+  computed: {
+
+    /**
+     * Returns the provided menu's submenu.
+     * @returns
+     *  The provided menu's submenus.
+     */
+    submenus(): Store.ContextMenuSubMenu[] {
+      return this.menus.filter(
+        m => m.type === "submenu"
+      ) as Store.ContextMenuSubMenu[];
+    }
+
   },
   emits: ["select"],
   methods: {

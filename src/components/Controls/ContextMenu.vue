@@ -8,7 +8,7 @@
     <ContextMenuListing 
       :sections="sections" 
       :forceInsideWindow="false" 
-      @select="(id, _, data) => $emit('select', id, data)"
+      :select="(id, _, data) => $emit('select', id, data)"
     />
   </FocusBox>
 </template>
@@ -16,7 +16,7 @@
 <script lang="ts">
 import * as Store from "@/store/StoreTypes";
 // Dependencies
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, type PropType } from 'vue';
 // Components
 import FocusBox from "@/components/Containers/FocusBox.vue";
 import ContextMenuListing from "./ContextMenuListing.vue";

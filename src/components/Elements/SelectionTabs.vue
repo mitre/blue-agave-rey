@@ -65,13 +65,13 @@
 
 <script lang="ts">
 import * as Store from "@/store/StoreTypes";
-import * as Features from "@/assets/rey.features";
+import Features from "@/assets/rey.features";
 // Dependencies
 import { mapState } from "vuex";
 import { defineComponent } from "vue";
 import { ActivitySetInfo } from "@/assets/scripts/ViewData/ActivitySetInfo";
 import { GenericViewItem } from "@/assets/scripts/Visualizations/ViewBaseTypes/GenericViewItem";
-import { ActivitySetCommonNode, ActivitySetViewNode } from "@/assets/scripts/ViewData/ViewNode";
+import { type ActivitySetCommonNode, ActivitySetViewNode } from "@/assets/scripts/ViewData/ViewNode";
 // Components
 import Tab from "@/components/Containers/Tab.vue";
 import TabBox from "@/components/Containers/TabBox.vue";
@@ -100,7 +100,10 @@ export default defineComponent({
     /**
      * Activity Sets Store data
      */
-    ...mapState("ActivitySetsStore", {
+    ...mapState<any, {
+      selected: (state: Store.ActivitySetsStore) => Map<string, GenericViewItem>,
+      activitySets: (state: Store.ActivitySetsStore) => Map<string, ActivitySetInfo>
+    }>("ActivitySetsStore", {
       selected(state: Store.ActivitySetsStore): Map<string, GenericViewItem> {
         return state.selected
       },

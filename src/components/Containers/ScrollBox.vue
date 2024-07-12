@@ -27,7 +27,7 @@
 <script lang="ts">
 import { clamp } from "@/assets/scripts/Math";
 import { MouseTracker } from "@/assets/scripts/WebUtilities/MouseTracker";
-import { defineComponent, markRaw, Ref, ref } from 'vue';
+import { defineComponent, markRaw, type Ref, ref } from 'vue';
 
 export default defineComponent({
   name: "ScrollBox",

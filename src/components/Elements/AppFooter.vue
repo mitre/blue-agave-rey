@@ -45,8 +45,8 @@ import * as Store from "@/store/StoreTypes";
 import { Timeframe } from "@/assets/scripts/Collections/Timeframe";
 import { defineComponent } from "vue";
 import { mapActions, mapState } from "vuex";
-import { ActivitySetCommonNode } from "@/assets/scripts/ViewData/ViewNode";
 import { formatDateCal, formatTime, formatDuration } from '@/assets/scripts/Visualizations/Time';
+import type { ActivitySetCommonNode } from "@/assets/scripts/ViewData/ViewNode";
 // Components
 import ClockBeg from "@/components/Icons/ClockBeg.vue";
 import ClockEnd from "@/components/Icons/ClockEnd.vue";
@@ -76,7 +76,14 @@ export default defineComponent({
     /**
      * Activity Sets Store data
      */
-    ...mapState("ActivitySetsStore", {
+    ...mapState<any, {
+      triggerDataLoaded: (state: Store.ActivitySetsStore) => number,
+      triggerDataFocused: (state: Store.ActivitySetsStore) => number,
+      focus: (state: Store.ActivitySetsStore) => Timeframe,
+      sets: (state: Store.ActivitySetsStore) => number,
+      nodes: (state: Store.ActivitySetsStore) => Map<string, ActivitySetCommonNode>,
+      selected: (state: Store.ActivitySetsStore) => number
+    }>("ActivitySetsStore", {
       triggerDataLoaded(state: Store.ActivitySetsStore): number {
         return state.triggerDataLoaded;
       },
@@ -102,7 +109,10 @@ export default defineComponent({
     /**
      * App Settings Store data
      */
-    ...mapState("AppSettingsStore", {
+    ...mapState<any, {
+      display24HourTime: (state: Store.AppSettingsStore) => boolean,
+      timelineVisible: (state: Store.AppSettingsStore) => boolean
+    }>("AppSettingsStore", {
       display24HourTime(state: Store.AppSettingsStore): boolean {
         return state.settings.view.app.display_24_hour_time;
       },

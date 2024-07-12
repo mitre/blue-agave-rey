@@ -1,5 +1,5 @@
-import { GraphNode } from "./GraphNode"
 import { computeHash } from "../../String";
+import type { GraphNode } from "./GraphNode";
 
 export class GraphCluster {
     

@@ -1,13 +1,9 @@
 import * as d3 from "d3";
 import { Device } from "../../WebUtilities/Device";
-import { GraphEdge } from "./GraphEdge";
-import { GraphNode } from "./GraphNode";
-import { Primitive } from "../../HelperTypes";
 import { MouseClick } from "@/assets/scripts/WebUtilities/WebTypes";
 import { GraphCluster } from "./GraphCluster";
 import { EventEmitter } from "../EventEmitter";
 import { isInsideShape } from "../../Math";
-import { FontDescriptor } from "../Fonts";
 import { GenericViewEdge } from "../ViewBaseTypes/GenericViewEdge";
 import { GenericViewNode } from "../ViewBaseTypes/GenericViewNode";
 import { NodeRasterCache } from "./NodeRasterCache";
@@ -21,6 +17,10 @@ import {
     FillColorMask,
     Stroke1ColorMask, 
 } from "../VisualAttributes";
+import type { GraphEdge } from "./GraphEdge";
+import type { GraphNode } from "./GraphNode";
+import type { Primitive } from "../../HelperTypes";
+import type { FontDescriptor } from "../Fonts";
 
 export class ForceDirectedNetwork extends EventEmitter<GraphEvents> {
     
@@ -1013,7 +1013,6 @@ export class ForceDirectedNetwork extends EventEmitter<GraphEvents> {
 
         // 4. Derive nodes and edges
         this._nodes = [...nodes.values()];
-        console.log(this._nodes)
         this._weakEdges = [];
         this._strongEdges = [];
         for(let edge of edges.values()) {

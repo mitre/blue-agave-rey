@@ -19,7 +19,7 @@
           <p class="json">{{ JSON.stringify(exception, null, 2) }}</p>
         </ScrollBox>
       </div>
-      <button class="okay" @click="this.$emit('close')">OK</button>
+      <button class="okay" @click="$emit('close')">OK</button>
     </div>
   </Window>
 </template>

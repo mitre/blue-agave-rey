@@ -1,5 +1,5 @@
-import { GraphNode } from "./GraphNode"
 import { GenericViewEdge } from "../ViewBaseTypes/GenericViewEdge";
+import type { GraphNode } from "./GraphNode"
 
 export interface GraphEdge {
     id: string;

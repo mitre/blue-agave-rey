@@ -2,7 +2,7 @@
   <ScrollBox :style="style" :class="['dropdown-items-control', orientation]">
     <div class="options">
       <li 
-        v-for="option of options" :key="option.id"
+        v-for="option of options" :key="option.id.toString()"
         :class="{ focused: hoveredId === option.id }"
         @mouseenter="hoveredId = option.id"
         @click="select(option)"
@@ -16,8 +16,8 @@
 
 <script lang="ts">
 // Dependencies
-import { defineComponent, inject, PropType } from 'vue';
-import { Primitive } from '@/assets/scripts/HelperTypes';
+import { defineComponent, inject, type PropType } from 'vue';
+import type { Primitive } from '@/assets/scripts/HelperTypes';
 // Components
 import ScrollBox from "@/components/Containers/ScrollBox.vue";
 
@@ -48,6 +48,7 @@ export default defineComponent({
       required: true
     },
     selected: {
+      type: String as PropType<string | null>,
       default: null
     }
   },
@@ -59,7 +60,7 @@ export default defineComponent({
         bottom?: string, 
         right?: string
       },
-      hoveredId: this.selected,
+      hoveredId: this.selected as Primitive | null,
       orientation: [] as string[]
     }
   },

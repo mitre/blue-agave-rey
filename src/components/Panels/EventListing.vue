@@ -30,8 +30,8 @@ import Features from "@/assets/rey.features"
 import { ColorMap } from "@/assets/scripts/Visualizations/VisualAttributeValues";
 import { FillColorMask } from "@/assets/scripts/Visualizations/VisualAttributes";
 import { titleCase, Regex } from "@/assets/scripts/String";
-import { defineComponent, PropType } from "vue";
-import { ActivitySetAnalyticNode, ActivitySetCommonNode } from "@/assets/scripts/ViewData/ViewNode";
+import { defineComponent, type PropType } from "vue";
+import { ActivitySetAnalyticNode, type ActivitySetCommonNode } from "@/assets/scripts/ViewData/ViewNode";
 // Components
 import ArchiveListing from "@/components/Elements/ArchiveListing.vue";
 // Feature Configurations

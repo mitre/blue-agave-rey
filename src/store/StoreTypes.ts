@@ -2,12 +2,12 @@ import { Timeframe } from "@/assets/scripts/Collections/Timeframe";
 import { HotkeyObserver } from "@/assets/scripts/WebUtilities/HotkeyObserver";
 import { GenericViewItem } from "@/assets/scripts/Visualizations/ViewBaseTypes/GenericViewItem";
 import { ActivitySetInfo } from "@/assets/scripts/ViewData/ActivitySetInfo";
-import { ObjectKeysOfType } from "@/assets/scripts/HelperTypes";
-import { ActivitySetEvent } from "@/assets/scripts/ViewData/ActivitySetFileTypes";
 import { ChronologicalIndex } from "@/assets/scripts/Collections/ChronologicalIndex";
-import { ActivitySetCommonEdge } from "@/assets/scripts/ViewData/ViewEdge";
-import { ActivitySetCommonNode } from "@/assets/scripts/ViewData/ViewNode";
-import { ActivitySetTimelineLane } from "@/assets/scripts/ViewData/ViewTimelineLane";
+import type { ObjectKeysOfType } from "@/assets/scripts/HelperTypes";
+import type { ActivitySetEvent } from "@/assets/scripts/ViewData/ActivitySetFileTypes";
+import type { ActivitySetCommonEdge } from "@/assets/scripts/ViewData/ViewEdge";
+import type { ActivitySetCommonNode } from "@/assets/scripts/ViewData/ViewNode";
+import type { ActivitySetTimelineLane } from "@/assets/scripts/ViewData/ViewTimelineLane";
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -255,7 +255,7 @@ interface ContextMenuBase<T extends ContextMenuItemType> {
     data?: any
 }
 
-interface ContextMenuSubMenu extends ContextMenuBase<"submenu"> {
+export interface ContextMenuSubMenu extends ContextMenuBase<"submenu"> {
     sections : ContextMenuSection[]
 }
 

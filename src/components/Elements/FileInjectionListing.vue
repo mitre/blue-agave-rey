@@ -29,8 +29,8 @@
 
 <script lang="ts">
 // Dependencies
-import { defineComponent, PropType } from "vue";
-import { ActivitySetArchiveFileInjection } from "@/assets/scripts/ViewData/ActivitySetFileTypes";
+import { defineComponent, type PropType } from "vue";
+import type { ActivitySetArchiveFileInjection } from "@/assets/scripts/ViewData/ActivitySetFileTypes";
 // Components
 import FileIcon from "@/components/Elements/FileIcon.vue"
 import ScrollBox from "@/components/Containers/ScrollBox.vue";

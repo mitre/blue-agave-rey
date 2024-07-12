@@ -1,7 +1,7 @@
-import { ActivitySetCommonNode } from "./ViewNode";
+import type { ActivitySetCommonNode } from "./ViewNode";
 import { 
     GenericTimelineLane, 
-    IGenericTimelineTrack
+    type IGenericTimelineTrack
 } from "../Visualizations/ViewBaseTypes/GenericTimelineLane";
 
 export class ActivitySetTimelineLane extends GenericTimelineLane {
