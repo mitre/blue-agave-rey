@@ -42,7 +42,6 @@
             />
             <ScrollBox
               class="scrollbox"
-              scrollColor="#242424"
               :resetScrollOnChange="false"
               :alwaysShowScrollBar="true"
             >
@@ -75,7 +74,6 @@
         />
         <ScrollBox
           class="scrollbox"
-          scrollColor="#242424"
           :resetScrollOnChange="false"
           :alwaysShowScrollBar="true"
         >
@@ -560,6 +558,7 @@ type CheckboxItem = {
 
 .scrollbox :deep(.scroll-bar) {
   border-radius: 4px;
+  background: #242424;
 }
 
 ul {

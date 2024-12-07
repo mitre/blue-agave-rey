@@ -25,7 +25,7 @@
 <script lang="ts">
 import * as Store from "@/store/StoreTypes";
 import { Timeframe } from "@/assets/scripts/Collections/Timeframe";
-import { MouseTracker } from "@/assets/scripts/WebUtilities/MouseTracker";
+import { PointerTracker } from "@/assets/scripts/WebUtilities";
 import { GlobalFontStore } from "@/assets/scripts/Fonts";
 import { TimelinePreview } from "@/assets/scripts/Visualizations/TimelinePreview/TimelinePreview";
 import { mapActions, mapState } from "vuex";
@@ -45,7 +45,7 @@ export default defineComponent({
     return {
       Handle,
       drag: {
-        track: markRaw(new MouseTracker()),
+        track: markRaw(new PointerTracker()),
         handle: Handle.None,
         leftOffset: 0,
       },
@@ -138,8 +138,7 @@ export default defineComponent({
      */
     startDrag(event: PointerEvent, handle: number) {
       this.drag.handle = handle;
-      this.drag.track.capture(event, this.onDrag);
-      document.addEventListener("pointerup", this.stopDrag, { once: true });
+      this.drag.track.capture(event, this.onDrag, this.stopDrag);
       // +1 for this.$el's 1px border.
       this.drag.leftOffset = this.$el.getBoundingClientRect().left + 1;
     },
@@ -151,7 +150,7 @@ export default defineComponent({
      * @param track
      *  The mouse tracker.
      */
-    onDrag(event: PointerEvent, track: MouseTracker) {
+    onDrag(event: PointerEvent, track: PointerTracker) {
       event.preventDefault();
       let x;
       switch (this.drag.handle) {
@@ -174,12 +173,9 @@ export default defineComponent({
 
     /**
      * Handle drag stop behavior.
-     * @param event
-     *  The pointer event.
      */
-    stopDrag(event: PointerEvent) {
+    stopDrag() {
       this.drag.handle = Handle.None;
-      this.drag.track.release(event);
     },
 
     /**
