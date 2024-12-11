@@ -1,0 +1,32 @@
+.token-text-field_container {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr);
+    cursor: text;
+}
+
+.token-text-field_placeholder {
+    display: flex;
+    align-items: center;
+    grid-area: 1 / 1;
+}
+
+.token-text-field_window {
+    grid-area: 1 / 1;
+    overflow: hidden;
+}
+
+.token-text-field_inner {
+    overflow: scroll hidden;
+}
+
+.token-text-field_field {
+    display: flex;
+    align-items: center;
+    white-space: pre;
+    outline: none;
+}
+
+.token-text-field_empty {
+    width: 1px;
+}

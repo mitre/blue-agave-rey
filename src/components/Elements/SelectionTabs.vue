@@ -60,6 +60,9 @@
     <Tab name="Groups" class="tab" v-if="displayMatchingTab">
       <GroupMatchingTab :sets="sets"></GroupMatchingTab>
     </Tab>
+    <Tab name="Search" class="tab">
+      <Search></Search>
+    </Tab>
   </TabBox>
 </template>
 
@@ -75,6 +78,7 @@ import { type ActivitySetCommonNode, ActivitySetViewNode } from "@/assets/script
 // Components
 import Tab from "@/components/Containers/Tab.vue";
 import TabBox from "@/components/Containers/TabBox.vue";
+import Search from "@/components/Panels/Search.vue";
 import ScrollBox from "@/components/Containers/ScrollBox.vue";
 import EventListing from "@/components/Panels/EventListing.vue";
 import GroupMatchingTab from "./GroupMatchingTab.vue";
@@ -191,7 +195,7 @@ export default defineComponent({
   },
   emits: ["close"],
   components: { 
-    Tab, TabBox, ScrollBox, EventListing,
+    Tab, TabBox, Search, ScrollBox, EventListing,
     GroupMatchingTab, ActivitySetListing
   }
 });
