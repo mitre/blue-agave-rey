@@ -58,7 +58,7 @@ export default defineComponent({
   props: {
     fields: {
       type: Set as PropType<Set<string>>,
-      default: new Set(["process", "link", "test", "command_line", "user", "host"])
+      default: new Set([])
     },
     strict: {
       type: Boolean,

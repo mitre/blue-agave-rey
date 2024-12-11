@@ -1,3 +1,4 @@
+import lunr from "lunr";
 import Features from "@/assets/rey.features";
 import { clamp } from "@/assets/scripts/Math";
 import { markRaw } from "vue";
@@ -51,6 +52,7 @@ export default {
         collapsed: new Map(),
         timeframe: markRaw(Timeframe.TODAY.copy()),
         timeIndex: markRaw(new ChronologicalIndex<ActivitySetCommonNode>()),
+        searchIndex: markRaw(lunr(() => {})),
         triggerDataLoaded: 0,
         triggerDataFocused: 0,
         triggerDataDisplay: 0,
@@ -286,6 +288,29 @@ export default {
                     let edge = markRaw(new ActivitySetAnalyticEdge(id, src, node, len, time));
                     commit("addEdge", edge);
                 }
+
+                // Rebuild search index
+                const fields = Features.activity_set_event_listing.indexed_keys;
+                state.searchIndex = markRaw(lunr(function() {
+                    // Whitelist position
+                    this.metadataWhitelist = ['position']
+                    // Configure id and fields
+                    this.ref("id");
+                    for(let field of fields) {
+                        this.field(field);
+                    }
+                    // Load index
+                    for(const node of state.nodes.values()) {
+                        const _node: any = node.data;
+                        const entries = [["id", node.id]];
+                        for(let field of fields) {
+                            if(_node[field]) {
+                                entries.push([field, _node[field].toString()]);
+                            }
+                        }
+                        this.add(Object.fromEntries(entries));
+                    }
+                }));
 
                 // Edges
                 for (let edge of file.edges)
@@ -1119,7 +1144,7 @@ export default {
             if (s.size === 0) {
                 item.setSelection(Select.Single);
             } else if (s.size === 1) {
-                let sing = s.values().next().value;
+                let sing = s.values().next().value!;
                 sing.setSelection(Select.Multi);
                 item.setSelection(Select.Multi);
             } else {
@@ -1146,7 +1171,7 @@ export default {
             s.delete(item.id);
             // Set remaining node to single selection (if applicable)
             if (s.size === 1) {
-                let sing = s.values().next().value;
+                let sing = s.values().next().value!;
                 sing.setSelection(Select.Single);
             }
         },
@@ -1295,6 +1320,7 @@ export default {
             state.collapsed = new Map();
             state.timeframe = markRaw(Timeframe.TODAY.copy());
             state.timeIndex = markRaw(new ChronologicalIndex<ActivitySetCommonNode>());
+            state.searchIndex = markRaw(lunr(() => {}))
             state.triggerDataLoaded = 0;
             state.triggerDataFocused = 0;
             state.triggerDataDisplay = 0;

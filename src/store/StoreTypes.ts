@@ -3,6 +3,7 @@ import { HotkeyObserver } from "@/assets/scripts/WebUtilities/HotkeyObserver";
 import { GenericViewItem } from "@/assets/scripts/Visualizations/ViewBaseTypes/GenericViewItem";
 import { ActivitySetInfo } from "@/assets/scripts/ViewData/ActivitySetInfo";
 import { ChronologicalIndex } from "@/assets/scripts/Collections/ChronologicalIndex";
+import type { Index } from "lunr";
 import type { ObjectKeysOfType } from "@/assets/scripts/HelperTypes";
 import type { ActivitySetEvent } from "@/assets/scripts/ViewData/ActivitySetFileTypes";
 import type { ActivitySetCommonEdge } from "@/assets/scripts/ViewData/ViewEdge";
@@ -64,6 +65,7 @@ export type ActivitySetsStore = {
     collapsed: Map<string, GenericViewItem>,
     timeframe: Timeframe,
     timeIndex: ChronologicalIndex<ActivitySetCommonNode>,
+    searchIndex: Index,
     triggerDataLoaded: number,
     triggerDataFocused: number,
     triggerDataDisplay: number, 
