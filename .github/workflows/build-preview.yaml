@@ -1,0 +1,71 @@
+name: Build Preview Site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Prevent two builds (on the same branch) from executing at once
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  id-token: write
+  pages: write
+  pull-requests: write
+
+jobs:
+  deploy_rey_preview:
+    runs-on: ubuntu-latest
+    env:
+      BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+    steps:
+
+    # Configure Environment
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      id: "setup-node"
+      with:
+        node-version: '19'
+        cache: 'npm'
+        cache-dependency-path: 'package-lock.json'
+    - name: Install dependencies
+      run: npm ci
+
+    # Build and Upload Artifact
+    - name: Type Check
+      run: npm run type-check
+    - name: Build
+      run: npm run build-only -- --base /blue-agave-rey/
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: blue_agave_rey
+        path: dist/
+
+  github_pages:
+    # This job only runs when committing or merging to main branch.
+    if: github.ref_name == 'main'
+    needs: deploy_rey_preview
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: $\{\{ steps.deployment.outputs.page_url \}\}
+
+    steps:
+    - name: Setup Pages
+      uses: actions/configure-pages@v2
+    - name: Download Web Site
+      uses: actions/download-artifact@v3
+      with:
+        name: blue_agave_rey
+        path: blue_agave_rey
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v1
+      with:
+        path: ./blue_agave_rey
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v1
