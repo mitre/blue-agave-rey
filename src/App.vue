@@ -185,7 +185,10 @@ export default defineComponent({
     /**
      * Activity Set Importer actions
      */
-    ...mapActions("ActivitySetImporter", ["importActivitySetFileById"]),
+    ...mapActions("ActivitySetImporter", [
+      "importActivitySetFileById",
+      "importActivitySetFileByUrl"
+    ]),
 
     /**
      * Resize handle drag start behavior.
@@ -262,6 +265,13 @@ export default defineComponent({
         let refs = params.get("refs")?.split(",") ?? [];
         await this.importActivitySetFileById(
             { ids, refs, importLateralMoves: lm }
+        );
+      }
+      if(params.get("urls")) {
+        let urls = params.get("urls")!.split(",");
+        let refs = params.get("refs")?.split(",") ?? [];
+        await this.importActivitySetFileByUrl(
+          { urls, refs }
         );
       }
     } catch(ex) {

@@ -87,6 +87,99 @@ export default {
         },
 
         /**
+         * Imports Activity Sets by urls.
+         * @param ctx 
+         * @param importParams
+         *  [urls]
+         *   A url, or a list of urls, to import.
+         * @throws { ActivitySetApiError }
+         *  If the activity set could not be classified.
+         * @throws { MalformedActivitySetError }
+         *  If `file` is an improperly formatted Activity Set file.
+         */
+        async importActivitySetFileByUrl({ dispatch }, { urls, refs }: ImportByUrlParams) {
+            let o = { root: true }
+            let { 
+                enable_activity_set_classification
+            } = Features.classification;
+
+            // Convert urls to an array if necessary
+            if(!Array.isArray(urls)) urls = [urls];
+
+            // Open import status window
+            let id = await dispatch(OpenStatusWindow, { 
+                title: "Downloading Activity Set...",
+                subtitle: `0 of ${ urls.length } Complete`
+            }, o);
+
+            // Run import process
+            let err: Error | undefined;
+            try {
+
+                // Compile import files
+                let files = [];
+                for(let url of urls) {
+                    files.push(new Promise<any>(async (res, rej) => {
+                        try {
+                            let file = JSON.parse(await (await fetch(url)).text());
+                            let score: ActivitySetClassification;
+                            if(enable_activity_set_classification) {
+                                score = await dispatch(ClassifySet, file, o);
+                            } else {
+                                score =  {
+                                    value: NaN,
+                                    scored_by: "",
+                                    description: ""
+                                };
+                            }
+                            res({ file, data: { score }});
+                        } catch(ex) {
+                            rej(ex);
+                        }
+                    }));
+                }
+
+                // Await compilation
+                for(let i = 0; i < files.length; i++) {
+                    await files[i];
+                    await dispatch(UpdateWindow, {
+                        id,
+                        subtitle: `${ i + 1 } of ${ files.length } Complete`
+                    }, o);
+                }
+
+                // Wait for next frame
+                await new Promise(r => (requestAnimationFrame(r)));
+
+                // Import activity sets and lateral movements
+                let imports = [];
+                for(let i = 0; i < files.length; i++) {
+                    files[i] = await files[i]
+                }
+                imports.push(dispatch(ImportSet, { files, refs }, o));
+
+                // Await imports
+                await dispatch(UpdateWindow, {
+                    id,
+                    title: "Importing Activity Sets..."
+                }, o);
+                await Promise.all(imports);
+                
+            } catch(ex: any) {
+                err = ex;
+            }
+            
+            // Close status window
+            await dispatch(CloseWindow, id, o);
+            
+            // Throw exception if one occurred
+            if(err) {
+                throw err;
+            }
+
+        },
+
+        /**
          * Imports Activity Sets by id.
          * @param ctx
          *  The Vuex context.
@@ -255,4 +348,9 @@ type ImportByIdParams = {
     ids: string | string[], 
     refs: string | string[] | undefined,
     importLateralMoves: boolean
+}
+
+type ImportByUrlParams = { 
+    urls: string | string[],
+    refs: string | string[] | undefined
 }
