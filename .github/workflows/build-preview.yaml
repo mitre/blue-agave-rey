@@ -24,11 +24,11 @@ jobs:
     steps:
 
     # Configure Environment
-    - uses: actions/checkout@v3
-    - uses: actions/setup-node@v3
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
       id: "setup-node"
       with:
-        node-version: '19'
+        node-version: '20'
         cache: 'npm'
         cache-dependency-path: 'package-lock.json'
     - name: Install dependencies
@@ -40,7 +40,7 @@ jobs:
     - name: Build
       run: npm run build-only -- --base /blue-agave-rey/
     - name: Upload artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: blue_agave_rey
         path: dist/
@@ -58,14 +58,14 @@ jobs:
     - name: Setup Pages
       uses: actions/configure-pages@v2
     - name: Download Web Site
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: blue_agave_rey
         path: blue_agave_rey
     - name: Upload artifact
-      uses: actions/upload-pages-artifact@v1
+      uses: actions/upload-pages-artifact@v3
       with:
         path: ./blue_agave_rey
     - name: Deploy to GitHub Pages
       id: deployment
-      uses: actions/deploy-pages@v1
+      uses: actions/deploy-pages@v4
