@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 3.5.0 (2025-02-02)
+
+
+### Features
+
+* add `urls` query parameter ([2536dd5](https://github.com/mitre/blue-agave-rey/commit/2536dd545bfa7818d4c22aab130bb33a1165471c))
+
 ## [3.4.0](https://gitlab.mitre.org/BB-ATE/rey/compare/v3.3.2...v3.4.0) (2023-08-22)
 
 
