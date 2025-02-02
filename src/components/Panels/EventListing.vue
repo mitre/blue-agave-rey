@@ -98,7 +98,7 @@ export default defineComponent({
      * @returns
      *  The listing's fields.
      */
-    fields(): Map<string, string> {
+    fields(): Map<string, any> {
       let fields = new Map<string, string>();
       let data: any = this.event.data;
       for(let key in data) {
