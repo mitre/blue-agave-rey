@@ -1,5 +1,6 @@
 <template>
-  <ScrollBox :style="style" :class="['dropdown-items-control', orientation]">
+  <div :class="['dropdown-items-control', orientation]">
+    <ScrollBox>
     <div class="options">
       <li 
         v-for="option of options" :key="option.id.toString()"
@@ -12,6 +13,7 @@
       <li v-if="!options.length" class="no-options">No {{ type }}s</li>
     </div>
   </ScrollBox>
+  </div>
 </template>
 
 <script lang="ts">
@@ -53,13 +55,7 @@ export default defineComponent({
     }
   },
   data() {
-    return { 
-      style: { top: "100%", left: "0px" } as { 
-        top?: string, 
-        left?: string, 
-        bottom?: string, 
-        right?: string
-      },
+    return {
       hoveredId: this.selected as Primitive | null,
       orientation: [] as string[]
     }
@@ -83,22 +79,16 @@ export default defineComponent({
     let { bottom, right } = this.$el.getBoundingClientRect();
     let viewWidth  = window.innerWidth;
     let viewHeight = window.innerHeight;
-    // Clear style
-    this.style = {};
     // Offset vertically
     if(viewHeight < bottom) {
-      this.style.bottom = "100%";
       this.orientation.push("above");
     } else {
-      this.style.top = "100%";
       this.orientation.push("below");
     }
     // Offset horizontally
     if(viewWidth < right) {
-      this.style.right = "0px";
       this.orientation.push("right");
     } else {
-      this.style.left = "0px";
       this.orientation.push("left");
     }
   },
@@ -112,6 +102,8 @@ export default defineComponent({
 
 .dropdown-items-control {
   position: absolute;
+  display: flex;
+  flex-direction: column;
   width: max-content;
   min-width: 100%;
   color: #b8b8b8;
@@ -124,20 +116,29 @@ export default defineComponent({
   z-index: 99;
 }
 
+.scroll-box {
+  flex: 1;
+}
+
 .dropdown-items-control.above {
+  bottom: 100%;
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
   box-shadow: 2px -2px 4px rgb(0 0 0 / 26%);
 }
 .dropdown-items-control.below {
+  top: 100%;
   border-bottom-left-radius: 3px;
   border-bottom-right-radius: 3px;
   box-shadow: 2px 2px 4px rgb(0 0 0 / 26%);
 }
+
 .dropdown-items-control.left {
+  left: 0px;
   text-align: left;
 }
 .dropdown-items-control.right {
+  right: 0px;
   text-align: right;
 }
 

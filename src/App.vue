@@ -31,7 +31,7 @@
 import * as Store from "@/store/StoreTypes";
 // Dependencies
 import { clamp } from "./assets/scripts/Math";
-import { MouseTracker } from "./assets/scripts/WebUtilities/MouseTracker";
+import { PointerTracker } from "./assets/scripts/WebUtilities/PointerTracker";
 import { mapActions, mapState } from "vuex";
 import { defineComponent, ref, markRaw } from "vue";
 // Components
@@ -86,7 +86,7 @@ export default defineComponent({
       },
       drag: {
         handle: Resize.None,
-        track: markRaw(new MouseTracker())
+        track: markRaw(new PointerTracker())
       },
       mixedLayoutThreshold: 200,
       onResizeObserver: null as ResizeObserver | null
@@ -196,8 +196,7 @@ export default defineComponent({
      */
     startResize(event: PointerEvent, handle: number) {
       this.drag.handle = handle;
-      this.drag.track.capture(event, this.onResize);
-      document.addEventListener("pointerup", this.stopResize, { once: true });
+      this.drag.track.capture(event, this.onResize, this.stopResize);
     },
 
     /**
@@ -207,7 +206,7 @@ export default defineComponent({
      * @param track
      *  The mouse tracker.
      */
-    onResize(event: PointerEvent, track: MouseTracker) {
+    onResize(event: PointerEvent, track: PointerTracker) {
       event.preventDefault();
       let fs = this.frameSize;
       switch (this.drag.handle) {
@@ -225,12 +224,9 @@ export default defineComponent({
 
     /**
      * Resize handle drag stop behavior.
-     * @param event
-     *  The pointer event.
      */
-    stopResize(event: PointerEvent) {
+    stopResize() {
       this.drag.handle = Resize.None;
-      this.drag.track.release(event);
     },
 
     /**

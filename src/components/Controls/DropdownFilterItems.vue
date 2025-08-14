@@ -1,10 +1,10 @@
 <template>
-  <div :class="['dropdown-filter-items-control', orientation]" :style="style">
+  <div :class="['dropdown-filter-items-control', orientation]">
     <li class="view-all" @click="$emit('select', '__all_lanes', true)">
       <p class="check" v-show="inViewAllState">✓</p>
       <p class="text">View All</p>
     </li>
-    <ScrollBox class="scrollbox">
+    <ScrollBox>
       <div class="filters">
         <li 
           v-for="filter of filters" :key="filter.id.toString()"
@@ -36,12 +36,6 @@ export default defineComponent({
   },
   data() {
     return {
-      style: { top: "100%", left: "0px" } as { 
-        top?: string, 
-        left?: string, 
-        bottom?: string, 
-        right?: string
-      },
       orientation: [] as string[]
     }
   },
@@ -88,22 +82,16 @@ export default defineComponent({
     let { bottom, right } = this.$el.getBoundingClientRect();
     let viewWidth  = window.innerWidth;
     let viewHeight = window.innerHeight;
-    // Clear style
-    this.style = {};
     // Offset vertically
     if(bottom > viewHeight) {
-      this.style.bottom = "100%";
       this.orientation.push("above");
     } else {
-      this.style.top = "100%";
       this.orientation.push("below");
     }
     // Offset horizontally
     if(right > viewWidth) {
-      this.style.right = "0px";
       this.orientation.push("right");
     } else {
-      this.style.left = "0px";
       this.orientation.push("left");
     }
   },
@@ -132,17 +120,26 @@ export default defineComponent({
 }
 
 .dropdown-filter-items-control.above {
+  bottom: 100%;
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
   box-shadow: 2px -2px 4px rgb(0 0 0 / 26%);
 }
 .dropdown-filter-items-control.below {
+  top: 100%;
   border-bottom-left-radius: 3px;
   border-bottom-right-radius: 3px;
   box-shadow: 2px 2px 4px rgb(0 0 0 / 26%);
 }
 
-.scrollbox {
+.dropdown-filter-items-control.left {
+  left: 0px;
+}
+.dropdown-filter-items-control.right {
+  right: 0px;
+}
+
+.scroll-box {
   flex: 1;
 }
 
