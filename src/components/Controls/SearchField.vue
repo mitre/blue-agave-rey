@@ -301,6 +301,7 @@ export default defineComponent({
         if (beStrict) {
           query += clause.text;
         } else {
+          // TODO: Need to replicate clause with original search and one with * around it
           for (const token of clause.tokens) {
             const type = token.info & TypeMask;
             const isTerm = type === TokenInfo.Term;
@@ -420,6 +421,7 @@ export default defineComponent({
      *  The keydown event.
      */
     onKeyDown(event: KeyboardEvent) {
+      let activeOption;
       // Show palette
       this.showPalette = true;
       // Respond to key
@@ -461,9 +463,16 @@ export default defineComponent({
             this.updateSuggestionMode(this.query.clauses, ar + 1);
           }
           break;
+        case "Tab":
+          event.preventDefault();
+          activeOption = this.getSuggestion(idx);
+          if (activeOption) {
+            this.insertValueAtCursor(activeOption);
+          }
+          break;
         case "Enter":
           event.preventDefault();
-          const activeOption = this.getSuggestion(idx);
+          activeOption = this.getSuggestion(idx);
           if (activeOption) {
             this.insertValueAtCursor(activeOption);
           } else if (this.validQuery) {

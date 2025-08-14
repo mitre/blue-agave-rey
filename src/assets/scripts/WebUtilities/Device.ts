@@ -13,6 +13,11 @@ class DeviceManager extends EventEmitter<{
     }
 
 
+    ///////////////////////////////////////////////////////////////////////////
+    //  1. Screen Changes Detection  //////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
+
+
     /**
      * Listens for changes in the device's current pixel ratio.
      */
@@ -24,6 +29,42 @@ class DeviceManager extends EventEmitter<{
             }, { once: true });
     }
 
+
+    ///////////////////////////////////////////////////////////////////////////
+    //  2. Operating System Detection  ////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
+
+
+    /**
+     * Returns the device's current operating system class.
+     * @returns
+     *  The device's current operating system class.
+     */
+    public getOperatingSystemClass(): OperatingSystem {
+        if(navigator.userAgent.search("Win") !== -1) {
+            return OperatingSystem.Windows
+        } else if(navigator.userAgent.search("Mac") !== -1) {
+            return OperatingSystem.MacOS;
+        } else if(navigator.userAgent.search("X11") !== -1) {
+            return OperatingSystem.UNIX;
+        } else if(navigator.userAgent.search("Linux") !== -1) {
+            return OperatingSystem.Linux;
+        } else {
+            return OperatingSystem.Other;
+        }
+    }
+
+}
+
+/**
+ * Recognized operating systems.
+ */
+export enum OperatingSystem {
+    Windows,
+    MacOS,
+    UNIX,
+    Linux,
+    Other
 }
 
 // Export Device

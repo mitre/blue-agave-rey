@@ -7,7 +7,7 @@ import "@/assets/fonts/roboto_mono.css"
 import lunr from 'lunr'
 
 // Configure Lunr
-lunr.tokenizer.separator = /[\s]+/;
+lunr.tokenizer.separator = /[\\\s]+/;
 
 // Configure app
 createApp(App).use(store).mount('#app')

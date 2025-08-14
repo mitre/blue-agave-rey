@@ -41,16 +41,31 @@
 
 <script lang="ts">
 import * as Store from '@/store/StoreTypes';
+import { Device, OperatingSystem } from '@/assets/scripts/WebUtilities';
 import { defineComponent, type PropType, type Ref, ref } from 'vue';
 
-const KeyToText: { [key: string]: string } = {
+const KeyToTextWin: { [key: string]: string } = {
   Control    : "Ctrl",
   Escape     : "Esc",
   ArrowLeft  : "←",
   ArrowUp    : "↑",
   ArrowRight : "→",
   ArrowDown  : "↓",
-  Delete     : "Del"
+  Delete     : "Del",
+  Meta       : "Win"
+}
+
+const KeyToTextMacOS: { [key: string]: string } = {
+  Control    : "⌃",
+  Escape     : "Esc",
+  ArrowLeft  : "←",
+  ArrowUp    : "↑",
+  ArrowRight : "→",
+  ArrowDown  : "↓",
+  Delete     : "Del",
+  Meta       : "⌘",
+  Shift      : "⇧",
+  Alt        : "⌥"
 }
 
 export default defineComponent({
@@ -192,10 +207,17 @@ export default defineComponent({
       if(!shortcut) {
         return shortcut;
       } else {
-        return shortcut
-          .split("+")
-          .map(c => c in KeyToText ? KeyToText[c] : c)
-          .join("+");
+        if(Device.getOperatingSystemClass() === OperatingSystem.MacOS) {
+          return shortcut
+            .split("+")
+            .map(c => c in KeyToTextMacOS ? KeyToTextMacOS[c] : c)
+            .join("")
+        } else {
+          return shortcut
+            .split("+")
+            .map(c => c in KeyToTextWin ? KeyToTextWin[c] : c)
+            .join("+");
+        }
       }
     }
 

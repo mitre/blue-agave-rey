@@ -1,44 +1,95 @@
-import type { HotkeyAction, HotkeyItem } from "@/store/StoreTypes";
+import type { HotkeyItem } from "@/store/StoreTypes";
 
 export class HotkeyObserver {
 
-    private _keyState: string;
-    private _callback: (id: string, data?: any) => void;
-    private _callLoop: number | undefined;
-    private _container: HTMLElement | null;
+    /**
+     * The observer's input field.
+     */
     private _fileInput: HTMLInputElement;
-    private _hotkeyIdMap: Map<string, HotkeyItem>;
-    private _selectedFileId: string | null;
-    private _recognitionDelay: number;
-    private _boundAdvanceKeyState: (e: KeyboardEvent) => void;
-    private _boundReverseKeyState: (e: KeyboardEvent) => void;
 
     /**
-     * Creates a new HotkeyObserver.
+     * The id of the hotkey that most recently requested a file.
+     */
+    private _selectedFileId: string | null;
+
+    /**
+     * This map defines the evaluation order of modifier keys.
+     */
+    private static MODIFIER_KEYS = new Map<string, (e: KeyboardEvent) => Boolean>([
+        ["control", e => e.ctrlKey],
+        ["meta",    e => e.metaKey],
+        ["alt",     e => e.altKey],
+        ["shift",   e => e.shiftKey]
+    ]);
+
+    /**
+     * The key down function, bound to the current object.
+     */
+    private _boundOnKeyDown: (e: KeyboardEvent) => void;
+
+    /**
+     * The key up function, bound to the current object.
+     */
+    private _boundOnKeyUp: (e: KeyboardEvent) => void;
+
+    /**
+     * The function to call when a hotkey sequence is matched.
+     */
+    private _callback: (command: string, data?: any) => void;
+
+    /**
+     * The DOM element the hotkey observer is watching.
+     */
+    private _container: HTMLElement | null;
+
+    /**
+     * The hotkey observer's hotkey-id-to-item map.
+     */
+    private _hotkeyIdMap: Map<string, HotkeyItem>;
+
+    /**
+     * The last observed key state.
+     */
+    private _keyState: string;
+
+
+    /**
+     * Creates a new {@link HotkeyObserver}.
      * @param callback
      *  The function to call once a hotkey sequence is triggered.
-     * @param recognitionDelay
-     *  The time to wait (in milliseconds) before firing the hotkey callback.
      */
-    constructor(callback: (id: string) => void, recognitionDelay: number) {
-        
-        // Configure state
-        this._keyState = ".";
+    constructor(callback: (command: string, data?: any) => void);
+
+    /**
+     * Creates a new {@link HotkeyObserver}.
+     * @param callback
+     *  The function to call once a hotkey sequence is triggered.
+     * @param reactive
+     *  A function which returns the reactive proxy of an object. If the
+     *  {@link HotkeyObserver} needs to be reactive, this function should be
+     *  specified.
+     */
+    constructor(
+        callback: (command: string, data?: any) => void,
+        reactive?: <T extends object>(obj: T) => any);
+    constructor(
+        callback: (command: string, data?: any) => void,
+        reactive: <T extends object>(obj: T) => any = o => o
+    ) {
+        this._boundOnKeyDown = this.onKeyDown.bind(reactive(this));
+        this._boundOnKeyUp = this.onKeyUp.bind(reactive(this));
         this._callback = callback;
-        this._callLoop = undefined;
         this._container = null;
         this._hotkeyIdMap = new Map();
+        this._keyState = "";
         this._selectedFileId = null;
-        this._recognitionDelay = recognitionDelay;
-        this._boundAdvanceKeyState = this.advanceKeyState.bind(this);
-        this._boundReverseKeyState = this.reverseKeyState.bind(this);
 
         // Configure file input element
         this._fileInput = document.createElement("input");
         this._fileInput.type = "file";
         this._fileInput.addEventListener("change", this.readFile.bind(this));
-        
     }
+
 
     /**
      * Binds the HotkeyObserver to an HTML element.
@@ -47,33 +98,33 @@ export class HotkeyObserver {
      */
     public observe(container: HTMLElement) {
         this._container = container;
-        this._container.addEventListener("keydown", this._boundAdvanceKeyState);
-        this._container.addEventListener("keyup", this._boundReverseKeyState);
+        this._container.addEventListener("keydown", this._boundOnKeyDown);
+        this._container.addEventListener("keyup", this._boundOnKeyUp);
     }
 
     /**
      * Unbinds the HotkeyObserver from the HTML element.
      */
     public disconnect() {
-        this._container?.removeEventListener("keydown", this._boundAdvanceKeyState);
-        this._container?.removeEventListener("keyup", this._boundReverseKeyState);
+        this._container?.removeEventListener("keydown", this._boundOnKeyDown);
+        this._container?.removeEventListener("keyup", this._boundOnKeyUp);
     }
 
     /**
      * Configures the hotkeys to listen for.
-     * @param keymap
+     * @param keyMap
      *  An array of hotkeys.
      * @throws { OverlappingHotkeysError }
      *  If any hotkey sequences overlap with each other.
      */
-    public setHotkeys(keymap: HotkeyItem[]) {
+    public setHotkeys(keyMap: HotkeyItem[]) {
         this._hotkeyIdMap = new Map<string, HotkeyItem>();
-        for (let item of keymap) {
+        for (const item of keyMap) {
             if (item.shortcut === "") continue;
             // Derive hotkey id
-            let hotkeyId = this.keySequenceToHotKeyId(item.shortcut);
+            const hotkeyId = this.keySequenceToHotKeyId(item.shortcut);
             // Ensure hotkey id doesn't overlap with others 
-            for (let id of this._hotkeyIdMap.keys()) {
+            for (const id of this._hotkeyIdMap.keys()) {
                 if (id.startsWith(hotkeyId) || hotkeyId.startsWith(id)) {
                     throw new OverlappingHotkeysError(
                         `Overlapping key sequences ('${
@@ -90,18 +141,14 @@ export class HotkeyObserver {
     }
 
     /**
-     * Sets the recognition delay for triggered hotkeys.
-     * @param recognitionDelay
-     *  The delay in milliseconds.
-     */
-    public setRecognitionDelay(recognitionDelay: number) {
-        this._recognitionDelay = recognitionDelay;
-    }
-
-    /**
-     * Returns true if the provided hotkey sequence is active, false otherwise.
+     * Tests if a hotkey sequence is active.
+     * @remarks
+     *  Due to the inconsistent nature of the `keyup` event, this is not
+     *  guaranteed to be correct. Refer to: `HotKeyObserver.onKeyUp()` for more
+     *  information. This function will need to be refactored or deprecated in
+     *  the future.
      * @param sequence
-     *  The hotkey sequence to check.
+     *  The hotkey sequence.
      * @param strict
      *  [true]
      *   The active keys must match the provided hotkey sequence exactly.
@@ -112,49 +159,83 @@ export class HotkeyObserver {
      *  True if the provided hotkey sequence is active, false otherwise.
      */
     public isHotkeyActive(sequence: string, strict: boolean = true): boolean {
-        let id = this.keySequenceToHotKeyId(sequence);
+        const id = this.keySequenceToHotKeyId(sequence);
         return strict ? this._keyState === id : this._keyState.includes(id);
     }
 
     /**
-     * Adds a key event to the current key state.
+     * Key down behavior.
      * @param e
      *  The keydown event.
      */
-    private advanceKeyState(e: KeyboardEvent) {
-        let key = e.key.toLocaleLowerCase();
-        // Only acknowledge a key once
-        if (this._keyState.endsWith(`.${ key }.`))
-            return;
-        // Advanced current key state
-        clearTimeout(this._callLoop);
-        this._keyState += `${ key }.`
+    private onKeyDown(e: KeyboardEvent) {
+
         // If inside input field, ignore hotkeys
-        if((e.target as any).tagName === "INPUT")
+        if((e.target as any).tagName === "INPUT") {
             return;
+        }
+
+        // Advanced current key state
+        const nextKeyState = this.keyEventToHotKeyId(e); 
+        const isRepeat = this._keyState === nextKeyState;
+        this._keyState = nextKeyState;
+
         // Check key state
         if (this._hotkeyIdMap.has(this._keyState)) {
-            let hotkey = this._hotkeyIdMap.get(this._keyState)!;
-            // Disable browser default behavior if not requested
-            if (!hotkey.allowBrowserBehavior)
+            const hotkey = this._hotkeyIdMap.get(this._keyState)!;
+            // If disabled or if in repeat state and hotkey is not repeatable:
+            if(hotkey.disabled || (isRepeat && !hotkey.repeatable)) {
+                // Prevent all browser behavior
                 e.preventDefault();
+                // Bail
+                return;    
+            }
+            // Disable browser default behavior if not requested
+            if (!hotkey.allowBrowserBehavior) {
+                e.preventDefault();
+            }
             // Execute shortcut
             this.triggerHotkey(hotkey);
         } else {
             // If no key matched, block browser behavior by default
             e.preventDefault();
         }
+
     }
 
     /**
-     * Removes a key event from the current key state. 
+     * Key up behavior.
+     * @remarks
+     *  The `keyup` event will not fire in all cases. For example:
+     * 
+     *  - If a hotkey opens a separate window, there will be no `keyup` event.
+     *  - If the Command key is held (on MacOS), any other `keyup` is ignored.
+     *  - ...there are probably others.
+     * 
+     * For these reasons, do not rely on `keyup` events for critical
+     * functionality (at least until these issues can be addressed somehow).
      * @param e
      *  The keyup event.
      */
-    private reverseKeyState(e: KeyboardEvent) {
-        clearTimeout(this._callLoop);
-        let key = e.key.toLocaleLowerCase();
-        this._keyState = this._keyState.replace(`.${ key }.`, ".");
+    private onKeyUp(e: KeyboardEvent) {
+        // Resolve next modifier keys state
+        const nextKeyState = this.keyEventToHotKeyId(e).split(".");
+        const lostKey = nextKeyState.splice(-2, 1)[0];
+        // Resolve previous non-modifier
+        const prevNonModifier = this._keyState.split(".").slice(-2)[0];
+        // If lost key was non-modifier...
+        if(lostKey === prevNonModifier) {
+            // ...remove non-modifier.
+            nextKeyState.push("");
+        }
+        // If lost key was anything else...
+        else {
+            // ...keep non-modifier.
+            nextKeyState.push(prevNonModifier)
+        }
+        nextKeyState.push("");
+        // Update key state
+        this._keyState = nextKeyState.join(".");
     }
 
     /**
@@ -165,44 +246,24 @@ export class HotkeyObserver {
     private triggerHotkey(hotkey: HotkeyItem) {
         if (hotkey.disabled)
             return;
-        this._callLoop = setTimeout(() => {
-            switch (hotkey.type) {
-                case "action":
-                    this._callback(hotkey.id);
-                    if (hotkey.repeat)
-                        this.runRepeat(hotkey);
-                    break;
-                case "toggle":
-                    this._callback(hotkey.id, { value: hotkey.value });
-                    break;
-                case "link":
-                    window.open(hotkey.link, "_blank");
-                    this._keyState = ".";
-                    this._callback(hotkey.id);
-                    break;
-                case "file":
-                    this._fileInput.click();
-                    this._selectedFileId = hotkey.id;
-                    this._callback(`__preload_${hotkey.id}`);
-                    break;
-            }
-        }, this._recognitionDelay);
-    }
-
-    /**
-     * Fires the provided hotkey at its configured interval.
-     * @param info
-     *  The hotkey item.
-     */
-    private runRepeat(info: HotkeyAction) {
-        let repeat = function (this: any) {
-            // Call hotkey callback
-            this._callback(info.id);
-            // Schedule next call
-            this._callLoop = setTimeout(repeat, info.repeat!.interval);
-        }.bind(this);
-        // Kick off call loop
-        this._callLoop = setTimeout(repeat, info.repeat!.delay);
+        switch (hotkey.type) {
+            case "action":
+                this._callback(hotkey.id);
+                break;
+            case "toggle":
+                this._callback(hotkey.id, { value: hotkey.value });
+                break;
+            case "link":
+                window.open(hotkey.link, "_blank");
+                this._keyState = ".";
+                this._callback(hotkey.id);
+                break;
+            case "file":
+                this._fileInput.click();
+                this._selectedFileId = hotkey.id;
+                this._callback(`__preload_${hotkey.id}`);
+                break;
+        }
     }
 
     /**
@@ -229,14 +290,71 @@ export class HotkeyObserver {
      *  The sequence to evaluate.
      * @returns
      *  The sequence's hotkey id.
+     * @throws {InvalidKeySequenceError}
+     *  If the key sequence contains more than one non-modifier key.
      */
     private keySequenceToHotKeyId(sequence: string): string {
-        let hotkeyId = sequence
-            .toLocaleLowerCase()
+        let id = "";
+        // Parse tokens
+        const tokens = sequence
             .replace(/\s+/g, '')
-            .split("+")
-            .join(".");
-        return `.${hotkeyId}.`
+            .toLocaleLowerCase()
+            .split("+");
+        // Order modifier keys
+        for(const key of HotkeyObserver.MODIFIER_KEYS.keys()) {
+            const index = tokens.findIndex(o => o === key);
+            if(index !== -1) {
+                id += `.${ tokens.splice(index, 1)[0] }`;
+            }
+        }
+        // Resolve single non-modifier key
+        if(0 === tokens.length) {
+            id += `.`;
+        }
+        else if(2 <= tokens.length) {
+            throw new InvalidKeySequenceError(
+                `Hotkey contains ${ 
+                    tokens.length
+                } non-modifier keys (${
+                    tokens.join(",")
+            }).`);
+        } else if(!HotkeyObserver.MODIFIER_KEYS.has(tokens[0])) {
+            id += `.${ tokens[0] }`
+        } else {
+            throw new InvalidKeySequenceError(
+                `Hotkey duplicate modifier key '${
+                    tokens[0]
+                }'.`
+            );
+        }
+        // Return id
+        return `${ id }.`;
+    }
+
+    /**
+     * Converts a key event to its hotkey id.
+     * @param event
+     *  The keyboard event.
+     * @returns
+     *  The key event's hotkey id.
+     */
+    private keyEventToHotKeyId(event: KeyboardEvent): string {
+        let id = ""
+        // Parse modifier keys
+        for(const [key, isKey] of HotkeyObserver.MODIFIER_KEYS) {
+            if(isKey(event)) {
+                id += `.${ key }`;
+            }
+        }
+        // Parse key pressed
+        const keyPressed = event.key.toLocaleLowerCase();
+        if(!HotkeyObserver.MODIFIER_KEYS.has(keyPressed)) {
+            id += `.${ keyPressed }`;
+        } else {
+            id += `.`;
+        }
+        // Return id
+        return `${ id }.`;
     }
 
 }
@@ -244,7 +362,20 @@ export class HotkeyObserver {
 export class OverlappingHotkeysError extends Error {
 
     /**
-     * Creates a new OverlappingHotkeysError.
+     * Creates a new {@link OverlappingHotkeysError}.
+     * @param message
+     *  The error message.
+     */
+    constructor(message: string) {
+        super(message);
+    }
+
+}
+
+export class InvalidKeySequenceError extends Error {
+
+    /**
+     * Creates a new {@link InvalidKeySequenceError}.
      * @param message
      *  The error message.
      */

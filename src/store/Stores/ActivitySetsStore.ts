@@ -1,7 +1,7 @@
-import lunr from "lunr";
 import Features from "@/assets/rey.features";
 import { clamp } from "@/assets/scripts/Math";
 import { markRaw } from "vue";
+import lunr, { Index } from "lunr";
 import { ActivitySetInfo } from "@/assets/scripts/ViewData/ActivitySetInfo";
 import { GenericViewItem } from "@/assets/scripts/Visualizations/ViewBaseTypes/GenericViewItem"
 import { ChronologicalIndex } from "@/assets/scripts/Collections/ChronologicalIndex"
@@ -291,7 +291,7 @@ export default {
 
                 // Rebuild search index
                 const fields = Features.activity_set_event_listing.indexed_keys;
-                state.searchIndex = markRaw(lunr(function() {
+                commit("setSearchIndex", markRaw(lunr(function() {
                     // Whitelist position
                     this.metadataWhitelist = ['position']
                     // Configure id and fields
@@ -310,7 +310,7 @@ export default {
                         }
                         this.add(Object.fromEntries(entries));
                     }
-                }));
+                })));
 
                 // Edges
                 for (let edge of file.edges)
@@ -1104,6 +1104,17 @@ export default {
         setFocusTimeframe(state, time: ITimeframe) {
             state.focus.beg = time.beg;
             state.focus.end = time.end;
+        },
+
+        /**
+         * Sets the search index.
+         * @param state
+         *  The Vuex state.
+         * @param index
+         *  The new search index.
+         */
+        setSearchIndex(state, index: Index) {
+            state.searchIndex = index;
         },
 
         /**

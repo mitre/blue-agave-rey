@@ -138,6 +138,7 @@ export default {
                 sections: [
                     ...getters.itemSelectionSubmenu.sections,
                     getters.jumpToNodeMenuSection,
+                    getters.searchMenuSection,
                     { 
                         id: "mass_selection_options", 
                         items: [
@@ -279,7 +280,7 @@ export default {
          * @returns
          *  The jump to node menu section.
          */
-         jumpToNodeMenuSection(_s, _g, rootState): ContextMenuSection {
+        jumpToNodeMenuSection(_s, _g, rootState): ContextMenuSection {
             let { keybindings } = rootState.AppSettingsStore.settings;
             let KEYS = keybindings.selection;
             return { 
@@ -290,6 +291,33 @@ export default {
                         text: "Jump to Node...",
                         type: "action",
                         shortcut: KEYS.jump_to_node,
+                    }
+                ] 
+            }
+        },
+
+        /**
+         * Returns the search menu section.
+         * @param _s
+         *  The Vuex state. (Unused)
+         * @param _g
+         *  The Vuex getters. (Unused)
+         * @param rootState
+         *  The Vuex root state.
+         * @returns
+         *  The search menu section.
+         */
+        searchMenuSection(_s, _g, rootState): ContextMenuSection {
+            let { keybindings } = rootState.AppSettingsStore.settings;
+            let KEYS = keybindings.selection;
+            return { 
+                id: "search_options", 
+                items: [
+                    {
+                        id: "show_search",
+                        text: "Search...",
+                        type: "action",
+                        shortcut: KEYS.show_search
                     }
                 ] 
             }
@@ -1108,6 +1136,12 @@ export default {
                     await dispatch(
                         "AppSettingsStore/showTimeline", 
                         !data.value, o
+                    );
+                    break;
+                case "show_search":
+                    await dispatch(
+                        "AppSettingsStore/showTool", 
+                        "search", o
                     );
                     break;
         

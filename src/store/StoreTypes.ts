@@ -167,6 +167,7 @@ export type TimelineViewDisplaySetting = ObjectKeysOfType<TimelineViewDisplaySet
  * Appearance Settings
  */
 export type AppearanceSettings = {
+    tool: null | string,
     timeline: boolean
 }
 
@@ -197,7 +198,8 @@ export type SelectionKeybindings = {
     zoom_to_selection: string,
     jump_to_parent: string,
     jump_to_children: string,
-    jump_to_node: string
+    jump_to_node: string,
+    show_search: string
 } 
 
 /**
@@ -297,22 +299,16 @@ export type ContextMenuItem = ContextMenuSubMenu
 
 type HotkeyItemType = "action" | "file" | "link" | "toggle"
 
-interface HotkeyRepeatOptions {
-    delay: number,
-    interval: number
-}
-
 export interface HotkeyItemBase<T extends HotkeyItemType> {
     id: string,
     type: T;
     shortcut: string,
     disabled?: boolean,
-    allowBrowserBehavior?: boolean
+    allowBrowserBehavior?: boolean,
+    repeatable?: boolean | undefined
 }
 
-export interface HotkeyAction extends HotkeyItemBase<"action"> {
-    repeat?: HotkeyRepeatOptions
-}
+export interface HotkeyAction extends HotkeyItemBase<"action"> {}
 
 interface HotkeyLinkAction extends HotkeyItemBase<"link"> {
     link: string

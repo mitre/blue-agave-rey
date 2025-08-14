@@ -1,6 +1,7 @@
 import { LexemeType } from "./LexemeType";
 import type { Lexeme } from "./Lexeme";
 import type { LexerStateFunction } from "./LexerStateFunction";
+import lunr from "lunr";
 
 export class LunrQueryLexer {
 
@@ -77,7 +78,7 @@ export class LunrQueryLexer {
             }
 
             // If space character
-            if(char.match(/\s/)) {
+            if(char.match(lunr.tokenizer.separator)) {
                 lexer.prevChar();
                 if(lexer.width() > 0) {
                     lexer.tag(LexemeType.Term);
@@ -158,7 +159,7 @@ export class LunrQueryLexer {
             }
 
             // If non-space
-            if(char.match(/[^\s]/)) {
+            if(!char.match(lunr.tokenizer.separator)) {
                 lexer.prevChar();
                 if(lexer.width() > 0) {
                     lexer.tag(LexemeType.Space);

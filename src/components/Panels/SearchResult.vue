@@ -1,5 +1,5 @@
 <template>
-  <div class="event-listing-panel" @contextmenu.stop>
+  <div class="search-result-panel">
     <div class="header">
       <div class="header-info" :style="{ borderColor: color }">
         <div class="title">
@@ -10,39 +10,38 @@
         </div>
       </div>
     </div>
-    <div class="field" v-for="[name, value] in fields" :key="name">
+    <div class="field" v-for="[field, segments] of fields">
       <span class="name">
-        {{ name }}
+        {{ field }}
       </span>
-      <template v-if="getListingType(value) !== null">
-        <component class="value" :is="getListingType(value)" :listing="value" />
-      </template>
-      <span v-else :class="['value', getFormatType(name, value)]">
-        {{ value }}
+      <span :class="['value', getFormatType('test', 'test')]">
+        <span v-for="s of segments" :class="s.type">{{ s.text }}</span>
       </span>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import Features from "@/assets/rey.features"
+import Features from "@/assets/rey.features";
 // Dependencies
 import { ColorMap } from "@/assets/scripts/Visualizations/VisualAttributeValues";
 import { FillColorMask } from "@/assets/scripts/Visualizations/VisualAttributes";
-import { titleCase, Regex } from "@/assets/scripts/String";
-import { defineComponent, type PropType } from "vue";
+import { Regex, segmentFields, titleCase, type Segment } from "@/assets/scripts/String";
+import { defineComponent, markRaw, type PropType } from "vue";
 import { ActivitySetAnalyticNode, type ActivitySetCommonNode } from "@/assets/scripts/ViewData/ViewNode";
-// Components
-import ArchiveListing from "@/components/Elements/ArchiveListing.vue";
+import type { Index } from "lunr";
 // Feature Configurations
 let code_types = new Set(Features.activity_set_event_listing.code_types);
-let excluded_keys = new Set(Features.activity_set_event_listing.excluded_keys);
 
 export default defineComponent({
-  name: "EventListing",
-  props: { 
-    event: {
+  name: "Search",
+  props: {
+    node: {
       type: Object as PropType<ActivitySetCommonNode>,
+      required: true
+    },
+    match: {
+      type: Object as PropType<Index.Result>,
       required: true
     }
   },
@@ -54,7 +53,7 @@ export default defineComponent({
      *  The listing's color.
      */
     color(): string {
-      return ColorMap[this.event.style & FillColorMask]
+      return ColorMap[this.node.style & FillColorMask]
     },
 
     /**
@@ -64,16 +63,16 @@ export default defineComponent({
      */
     title(): string {
       let title;
-      if(this.event instanceof ActivitySetAnalyticNode) {
+      if (this.node instanceof ActivitySetAnalyticNode) {
         // Analytic: Return attack tactic
-        title = this.event.data.attack_tactic;
+        title = this.node.data.attack_tactic ?? "";
       } else {
         // Event: Return CAR type
         title = `${
-          this.event.getObjectTypeString()
+          this.node.getObjectTypeString()
         } ${
-          this.event.getActionTypeString()
-        }`
+          this.node.getActionTypeString()
+        }`;
       }
       return titleCase(title);
     },
@@ -84,12 +83,12 @@ export default defineComponent({
      *  The listing's subtitle.
      */
     subtitle(): string {
-      if(this.event instanceof ActivitySetAnalyticNode) {
+      if (this.node instanceof ActivitySetAnalyticNode) {
         // Analytic: Return attack technique id
-        return this.event.data.attack_technique_id;
+        return this.node.data.attack_technique_id;
       } else {
         // Event: Return first line of label
-        return this.event.getLabel().split("\n")[0];
+        return this.node.getLabel().split("\n")[0];
       }
     },
 
@@ -98,35 +97,18 @@ export default defineComponent({
      * @returns
      *  The listing's fields.
      */
-    fields(): Map<string, any> {
-      let fields = new Map<string, string>();
-      let data: any = this.event.data;
-      for(let key in data) {
-        if(excluded_keys.has(key))
-          continue;
-        fields.set(key, data[key]);
-      }
-      return fields;
+    fields(): Map<string, Segment[]> {
+      return markRaw(
+        segmentFields(
+          this.node.data,
+          this.match.matchData,
+          30
+        )
+      );
     }
 
   },
   methods: {
-    
-    /**
-     * Gets a field's listing type, null if no listing type.
-     * @param value
-     *  The field's value.
-     * @returns
-     *  The field's listing type, null if no listing type.
-     */
-    getListingType(value: any) {
-      switch(value.type) {
-        case "archive-info":
-          return ArchiveListing;
-        default:
-          return null;
-      }
-    },
 
     /**
      * Gets a field's format type.
@@ -138,11 +120,11 @@ export default defineComponent({
      *  The field's format type.
      */
     getFormatType(key: string, value: any): "code" | "text" {
-      if(value instanceof Object) {
+      if (value instanceof Object) {
         return "text"
-      } else if(value.constructor.name === Number.name) {
+      } else if (value.constructor.name === Number.name) {
         return "code";
-      } else if(Regex.Uuid.test(value)) {
+      } else if (Regex.Uuid.test(value)) {
         return "code";
       }
       return code_types.has(key) ? "code" : "text";
@@ -156,11 +138,11 @@ export default defineComponent({
 
 /** === Main Panel === */
 
-.event-listing-panel {
+.search-result-panel {
+  user-select: text;
   border: solid 1px #383838;
   border-radius: 3px;
   background: #242424;
-  user-select: text;
   overflow: hidden;
 }
 
@@ -181,13 +163,13 @@ export default defineComponent({
 
 .header-info .title {
   color: #d9d9d9;
-  font-size: 15pt;
+  font-size: 10pt;
   font-weight: 700;
 }
 
 .header-info .subtitle {
   color: #999999;
-  font-size: 10.5pt;
+  font-size: 9.5pt;
   font-weight: 600;
 }
 
@@ -198,6 +180,7 @@ export default defineComponent({
   border-bottom: solid 1px #383838;
   margin: 0px 9px;
 }
+
 .field:last-child {
   border-bottom: none;
 }
@@ -232,6 +215,10 @@ export default defineComponent({
   border-radius: 3px;
   margin: 7px 7px 0px;
   background: #1f1f1f;
+}
+
+.mark {
+  background: #ff8236;
 }
 
 </style>

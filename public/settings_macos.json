@@ -12,6 +12,7 @@
             "display_24_hour_time": false,
             "display_day_night_highlighting": true,
             "appearance": {
+                "tool": null,
                 "timeline": true
             }
         },
@@ -34,24 +35,25 @@
     },
     "keybindings": {
         "import_export": {
-            "open_activity_set": "Control+O",
+            "open_activity_set": "Meta+O",
             "add_activity_set": "",
-            "add_lateral_movement": "Control+L",
+            "add_lateral_movement": "Meta+L",
             "import_activity_sets": "",
             "import_activity_set_by_id": "",
-            "export_session": "Control+S"
+            "export_session": "Meta+S"
         },
         "selection": {
             "traceback": "Shift",
-            "multi_select": "Control",
-            "select_all": "Control+A",
+            "multi_select": "Meta",
+            "select_all": "Meta+A",
             "deselect_all": "Escape",
             "freeze_node": "Shift+F",
             "collapse_node": "Shift+S",
             "zoom_to_selection": "Shift+Z",
             "jump_to_parent": "Shift+P",
             "jump_to_children": "Shift+C",
-            "jump_to_node": "Control+F"
+            "jump_to_node": "Meta+J",
+            "show_search": "Meta+F"
         },
         "time_focus": {
             "snap_to_day": "D",

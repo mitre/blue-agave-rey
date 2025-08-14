@@ -1,4 +1,5 @@
 import Features from "@/assets/rey.features";
+import { reactive } from "vue";
 import { HotkeyObserver } from "@/assets/scripts/WebUtilities/HotkeyObserver";
 import { SettingsConfigurationError } from "../Exceptions/SettingsConfigurationError";
 import type { Module } from "vuex"
@@ -23,33 +24,63 @@ export default {
         nativeHotkeys(): HotkeyItem[] {
             return [
                 {
-                    id: "copy",
+                    id: "copy_win",
                     type: "action",
                     shortcut: "Control+C",
                     allowBrowserBehavior: true
                 },
                 {
-                    id: "cut",
+                    id: "copy_osx",
+                    type: "action",
+                    shortcut: "Meta+C",
+                    allowBrowserBehavior: true
+                },
+                {
+                    id: "cut_win",
                     type: "action",
                     shortcut: "Control+X",
                     allowBrowserBehavior: true
                 },
                 {
-                    id: "paste",
+                    id: "cut_osx",
+                    type: "action",
+                    shortcut: "Meta+X",
+                    allowBrowserBehavior: true
+                },
+                {
+                    id: "paste_win",
                     type: "action",
                     shortcut: "Control+V",
                     allowBrowserBehavior: true
                 },
                 {
-                    id: "refresh",
+                    id: "paste_osx",
+                    type: "action",
+                    shortcut: "Meta+V",
+                    allowBrowserBehavior: true
+                },
+                {
+                    id: "refresh_win",
                     type: "action",
                     shortcut: "Control+R",
                     allowBrowserBehavior: true
                 },
                 {
-                    id: "hard-refresh",
+                    id: "refresh_osx",
+                    type: "action",
+                    shortcut: "Meta+R",
+                    allowBrowserBehavior: true
+                },
+                {
+                    id: "hard-refresh_win",
                     type: "action",
                     shortcut: "Control+Shift+R",
+                    allowBrowserBehavior: true
+                },
+                {
+                    id: "hard-refresh_osx",
+                    type: "action",
+                    shortcut: "Meta+Shift+R",
                     allowBrowserBehavior: true
                 }
             ]
@@ -168,6 +199,11 @@ export default {
                     id: "jump_to_node",
                     type: "action",
                     shortcut: KEYS.jump_to_node
+                },
+                {
+                    id: "show_search",
+                    type: "action",
+                    shortcut: KEYS.show_search
                 }
             ];
         },
@@ -184,7 +220,6 @@ export default {
          *  The time hotkeys.
          */
         timeHotkeys(_s, _g, rootState): HotkeyItem[] {
-            let repeat = { delay: 400, interval: 50 };
             let { keybindings } = rootState.AppSettingsStore.settings;
             let KEYS = keybindings.time_focus;
             return [
@@ -202,61 +237,61 @@ export default {
                     id: "jump_to_prev_night",
                     type: "action",
                     shortcut: KEYS.jump_to_prev_night,
-                    repeat
+                    repeatable: true
                 },
                 {
                     id: "jump_to_prev_day",
                     type: "action",
                     shortcut: KEYS.jump_to_prev_day,
-                    repeat
+                    repeatable: true
                 },
                 {
                     id: "jump_to_next_day",
                     type: "action",
                     shortcut: KEYS.jump_to_next_day,
-                    repeat
+                    repeatable: true
                 },
                 {
                     id: "jump_to_next_night",
                     type: "action",
                     shortcut: KEYS.jump_to_next_night,
-                    repeat
+                    repeatable: true
                 },
                 {
                     id: "nudge_time_focus_forward",
                     type: "action",
                     shortcut: KEYS.nudge_time_focus_forward,
-                    repeat
+                    repeatable: true
                 },
                 {
                     id: "nudge_time_focus_backward",
                     type: "action",
                     shortcut: KEYS.nudge_time_focus_backward,
-                    repeat
+                    repeatable: true
                 },
                 {
                     id: "expand_time_focus_beg",
                     type: "action",
                     shortcut: KEYS.expand_time_focus_beg,
-                    repeat
+                    repeatable: true
                 },
                 {
                     id: "contract_time_focus_beg",
                     type: "action",
                     shortcut: KEYS.contract_time_focus_beg,
-                    repeat
+                    repeatable: true
                 },
                 {
                     id: "contract_time_focus_end",
                     type: "action",
                     shortcut: KEYS.contract_time_focus_end,
-                    repeat
+                    repeatable: true
                 },
                 {
                     id: "expand_time_focus_end",
                     type: "action",
                     shortcut: KEYS.expand_time_focus_end,
-                    repeat
+                    repeatable: true
                 }
             ];
         },
@@ -313,10 +348,11 @@ export default {
         reloadHotkeys({ state, getters, dispatch, commit }) {
             if(state.observer === null) {
                 let observer = new HotkeyObserver(
-                    (id: string, data?: any) => {
+                    (id: string | undefined, data?: any) => {
                         dispatch("_fireHotKey", { id, data });
                     },
-                0);
+                    reactive
+                );
                 observer.observe(document.body);
                 commit("setObserver", observer);
             }

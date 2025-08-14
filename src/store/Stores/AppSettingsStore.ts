@@ -1,5 +1,6 @@
 import Features from "@/assets/rey.features";
 import { Timeframe } from "@/assets/scripts/Collections/Timeframe";
+import { Device, OperatingSystem } from "@/assets/scripts/WebUtilities";
 import { InvalidTimelineSortError } from "../Exceptions/InvalidTimelineSortError";
 import { InvalidDayNightModeError } from "../Exceptions/InvalidDayNightModeError";
 import { InvalidNudgeIntervalError } from "../Exceptions/InvalidNudgeIntervalError";
@@ -33,6 +34,7 @@ export default {
                     display_24_hour_time: false,
                     display_day_night_highlighting: true,
                     appearance: {
+                        tool: null,
                         timeline: true
                     }
                 },
@@ -72,7 +74,8 @@ export default {
                     zoom_to_selection: "",
                     jump_to_parent: "",
                     jump_to_children: "",
-                    jump_to_node: ""
+                    jump_to_node: "",
+                    show_search: ""
                 },
                 time_focus: {
                     snap_to_day: "",
@@ -146,7 +149,13 @@ export default {
          *  If any hotkey sequences overlap with each other.
          */
         async loadAppSettings({ commit, dispatch, state }) {
-            let settings = await (await fetch("./settings.json")).json();
+            // Select settings
+            let settings;
+            if(Device.getOperatingSystemClass() === OperatingSystem.MacOS) {
+                settings = await (await fetch(`./settings_macos.json`)).json();
+            } else {
+                settings = await (await fetch(`./settings_win.json`)).json();
+            }
             // Wrap file classes
             let fc = settings.file_classes;
             fc.text = new Set(fc.text);
@@ -178,6 +187,20 @@ export default {
          */
         showTimeline({ commit }, value: boolean) {
             commit("setAppearanceSetting", { id: "timeline", value });
+        },
+
+        /**
+         * Shows a tool or hides all tools.
+         * @param ctx
+         *  The Vuex context.
+         * @param value
+         *  [null]
+         *   Hide all tools.
+         *  [string]
+         *   The name of the tool to show.
+         */
+        showTool({ commit }, value: null | string) {
+            commit("setAppearanceSetting", { id: "tool", value });
         },
 
         /**
